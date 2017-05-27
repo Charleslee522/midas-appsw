@@ -85,7 +85,45 @@ namespace MIDAS
 
         private void exportItem_Click(object sender, EventArgs e)
         {
+            SaveFileDialog exportImageDialog = new SaveFileDialog();
+            exportImageDialog.Filter = "JPeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif|Png Image|*.png";
+            exportImageDialog.Title = "Save an Image File";
 
+            if (exportImageDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                
+                if (String.IsNullOrWhiteSpace(exportImageDialog.FileName))
+                {
+                    MessageBox.Show("파일 이름이 비어있습니다.");
+                }
+                else
+                {
+                    System.IO.FileStream fs = (System.IO.FileStream)exportImageDialog.OpenFile();
+                    using (Bitmap bitmap = new Bitmap(RightPanel.ClientSize.Width, RightPanel.ClientSize.Height))
+                    {
+                        RightPanel.DrawToBitmap(bitmap, RightPanel.ClientRectangle);
+                        switch (exportImageDialog.FilterIndex)
+                        {
+                            case 1:
+                                bitmap.Save(fs, System.Drawing.Imaging.ImageFormat.Jpeg);
+                                break;
+
+                            case 2:
+                                bitmap.Save(fs, System.Drawing.Imaging.ImageFormat.Bmp);
+                                break;
+
+                            case 3:
+                                bitmap.Save(fs, System.Drawing.Imaging.ImageFormat.Gif);
+                                break;
+
+                            case 4:
+                                bitmap.Save(fs, System.Drawing.Imaging.ImageFormat.Png);
+                                break;
+                        }
+                    }
+                    fs.Close();
+                }
+            }
         }
 
         private void fileToolStripMenuItem_Click(object sender, EventArgs e)
