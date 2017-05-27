@@ -122,5 +122,10 @@ namespace MIDAS
 
             RightPanel.Controls.Add(Class);
         }
+
+        private void CloseMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }

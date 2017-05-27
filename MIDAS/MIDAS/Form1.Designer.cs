@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Class", System.Windows.Forms.HorizontalAlignment.Center);
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Line", System.Windows.Forms.HorizontalAlignment.Center);
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Class", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Line", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem(new string[] {
             "Class"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
-            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem(new string[] {
             "Interface"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
-            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem(new string[] {
             "Line"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,6 +49,12 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.RightPanel = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
+            this.SaveBeginSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.SaveEndSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.SaveAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenRecentMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CloseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CloseSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ParentWindow)).BeginInit();
             this.ParentWindow.Panel1.SuspendLayout();
@@ -75,10 +81,16 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripMenuItem,
             this.openToolStripMenuItem,
+            this.OpenRecentMenuItem,
+            this.SaveBeginSeparator,
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
+            this.SaveAllMenuItem,
+            this.SaveEndSeparator,
             this.importToolStripMenuItem,
-            this.exportToolStripMenuItem});
+            this.exportToolStripMenuItem,
+            this.CloseSeparator,
+            this.CloseMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -86,42 +98,47 @@
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.newToolStripMenuItem.Text = "New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.saveAsToolStripMenuItem.Text = "Save As";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsMenuItem_Click);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.importToolStripMenuItem.Text = "Import";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importMenuItem_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exportToolStripMenuItem.Text = "Export";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportItem_Click);
             // 
@@ -169,26 +186,26 @@
             this.listView1.BackColor = System.Drawing.SystemColors.ControlDark;
             this.listView1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            listViewGroup3.Header = "Class";
-            listViewGroup3.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            listViewGroup3.Name = "ClassGroup";
-            listViewGroup4.Header = "Line";
-            listViewGroup4.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            listViewGroup4.Name = "LineGroup";
+            listViewGroup5.Header = "Class";
+            listViewGroup5.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            listViewGroup5.Name = "ClassGroup";
+            listViewGroup6.Header = "Line";
+            listViewGroup6.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            listViewGroup6.Name = "LineGroup";
             this.listView1.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup3,
-            listViewGroup4});
+            listViewGroup5,
+            listViewGroup6});
             this.listView1.HoverSelection = true;
-            listViewItem4.Group = listViewGroup3;
-            listViewItem4.StateImageIndex = 0;
-            listViewItem5.Group = listViewGroup3;
-            listViewItem5.StateImageIndex = 0;
-            listViewItem6.Group = listViewGroup4;
-            listViewItem6.StateImageIndex = 0;
+            listViewItem7.Group = listViewGroup5;
+            listViewItem7.StateImageIndex = 0;
+            listViewItem8.Group = listViewGroup5;
+            listViewItem8.StateImageIndex = 0;
+            listViewItem9.Group = listViewGroup6;
+            listViewItem9.StateImageIndex = 0;
             this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem4,
-            listViewItem5,
-            listViewItem6});
+            listViewItem7,
+            listViewItem8,
+            listViewItem9});
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
             this.listView1.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -216,6 +233,41 @@
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // SaveBeginSeparator
+            // 
+            this.SaveBeginSeparator.Name = "SaveBeginSeparator";
+            this.SaveBeginSeparator.Size = new System.Drawing.Size(149, 6);
+            // 
+            // SaveEndSeparator
+            // 
+            this.SaveEndSeparator.Name = "SaveEndSeparator";
+            this.SaveEndSeparator.Size = new System.Drawing.Size(149, 6);
+            // 
+            // SaveAllMenuItem
+            // 
+            this.SaveAllMenuItem.Name = "SaveAllMenuItem";
+            this.SaveAllMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.SaveAllMenuItem.Text = "Save All";
+            // 
+            // OpenRecentMenuItem
+            // 
+            this.OpenRecentMenuItem.Name = "OpenRecentMenuItem";
+            this.OpenRecentMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.OpenRecentMenuItem.Text = "Open Recent";
+            // 
+            // CloseMenuItem
+            // 
+            this.CloseMenuItem.Name = "CloseMenuItem";
+            this.CloseMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
+            this.CloseMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.CloseMenuItem.Text = "Close";
+            this.CloseMenuItem.Click += new System.EventHandler(this.CloseMenuItem_Click);
+            // 
+            // CloseSeparator
+            // 
+            this.CloseSeparator.Name = "CloseSeparator";
+            this.CloseSeparator.Size = new System.Drawing.Size(149, 6);
             // 
             // Form1
             // 
@@ -257,6 +309,12 @@
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.Panel RightPanel;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ToolStripMenuItem OpenRecentMenuItem;
+        private System.Windows.Forms.ToolStripSeparator SaveBeginSeparator;
+        private System.Windows.Forms.ToolStripMenuItem SaveAllMenuItem;
+        private System.Windows.Forms.ToolStripSeparator SaveEndSeparator;
+        private System.Windows.Forms.ToolStripSeparator CloseSeparator;
+        private System.Windows.Forms.ToolStripMenuItem CloseMenuItem;
     }
 }
 
