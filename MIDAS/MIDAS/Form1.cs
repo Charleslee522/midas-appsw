@@ -324,7 +324,7 @@ namespace MIDAS
         
         ListViewItem Item;
 
-        private void listView1_ItemDrag(object sender, ItemDragEventArgs e)
+        private void listView1_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             // 클릭 이벤트로 바꿔 줘야 함
             this.Cursor = Cursors.Hand;
@@ -335,6 +335,19 @@ namespace MIDAS
                 Item = null;
                 //Console.WriteLine(Item.Text);
             }
+        }
+
+        private void listView1_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            //// 클릭 이벤트로 바꿔 줘야 함
+            //this.Cursor = Cursors.Hand;
+            //Item = (ListViewItem)e.Item;
+            //if (Item.Text == "Line")
+            //{
+            //    isLine = true;
+            //    Item = null;
+            //    //Console.WriteLine(Item.Text);
+            //}
         }
 
         private void RightPanel_MouseUp(object sender, MouseEventArgs e)
@@ -428,7 +441,7 @@ namespace MIDAS
                 temp.Left = e.X + temp.Left - prevPos.X;
                 temp.Top = e.Y + temp.Top - prevPos.Y;
             }
-            DrawLine();
+            BasicDrawLine();
         }
         
         // 이하 Lable TextBox
@@ -462,18 +475,63 @@ namespace MIDAS
                 control.Dispose();
         }
 
-        private void DrawLine()
+        private void BasicDrawLine()
         {
             Graphics graphic = RightPanel.CreateGraphics();
             graphic.Clear(RightPanel.BackColor);
             Pen pen = new Pen(Color.Black);
             Point p1, p2;
-            for(int i=0;i<fromControl.Count && i<toControl.Count; i++)
+            for (int i = 0; i < fromControl.Count && i < toControl.Count; i++)
             {
-                p1 = new Point(fromControl[i].Left+fromControl[i].Width/2, fromControl[i].Top + fromControl[i].Height / 2);
+                p1 = new Point(fromControl[i].Left + fromControl[i].Width / 2, fromControl[i].Top + fromControl[i].Height / 2);
                 p2 = new Point(toControl[i].Left + toControl[i].Width / 2, toControl[i].Top + toControl[i].Height / 2);
-                graphic.DrawLine(pen, p1, p2);
+
+                if (fromControl[i] == toControl[i])
+                {
+                    graphic.DrawLine(pen, p1, new Point(p1.X + fromControl[i].Width, p2.Y));
+
+                    graphic.DrawLine(pen, new Point(p1.X + fromControl[i].Width, p2.Y),
+                        new Point(p1.X + fromControl[i].Width, p2.Y - fromControl[i].Height));
+
+                    graphic.DrawLine(pen, new Point(p1.X + fromControl[i].Width, p2.Y - fromControl[i].Height),
+                        new Point(p1.X, p2.Y - fromControl[i].Height));
+
+                    graphic.DrawLine(pen, new Point(p1.X, p2.Y - fromControl[i].Height),
+                        new Point(p1.X, fromControl[i].Top));
+                }
+                else
+                    graphic.DrawLine(pen, p1, p2);
             }
         }
+
+        private void DependencyDrawLine()
+        {
+            Graphics graphic = RightPanel.CreateGraphics();
+            graphic.Clear(RightPanel.BackColor);
+            Pen pen = new Pen(Color.Black);
+            Point p1, p2;
+            for (int i = 0; i < fromControl.Count && i < toControl.Count; i++)
+            {
+                p1 = new Point(fromControl[i].Left + fromControl[i].Width / 2, fromControl[i].Top + fromControl[i].Height / 2);
+                p2 = new Point(toControl[i].Left + toControl[i].Width / 2, toControl[i].Top + toControl[i].Height / 2);
+                
+                if (fromControl[i] == toControl[i])
+                {
+                    graphic.DrawLine(pen, p1, new Point(p1.X + fromControl[i].Width, p2.Y));
+
+                    graphic.DrawLine(pen, new Point(p1.X + fromControl[i].Width, p2.Y),
+                        new Point(p1.X + fromControl[i].Width, p2.Y - fromControl[i].Height));
+
+                    graphic.DrawLine(pen, new Point(p1.X + fromControl[i].Width, p2.Y - fromControl[i].Height),
+                        new Point(p1.X, p2.Y - fromControl[i].Height));
+
+                    graphic.DrawLine(pen, new Point(p1.X, p2.Y - fromControl[i].Height),
+                        new Point(p1.X, fromControl[i].Top));
+                }
+                else
+                    graphic.DrawLine(pen, p1, p2);
+            }
+        }
+
     }
 }
