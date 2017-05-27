@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Small_Training
+namespace MIDAS
 {
     static class Program
     {

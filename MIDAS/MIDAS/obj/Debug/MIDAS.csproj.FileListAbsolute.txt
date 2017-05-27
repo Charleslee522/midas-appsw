@@ -1,0 +1,9 @@
+c:\users\haro_\documents\visual studio 2015\Projects\MIDAS\MIDAS\bin\Debug\MIDAS.exe.config
+c:\users\haro_\documents\visual studio 2015\Projects\MIDAS\MIDAS\bin\Debug\MIDAS.exe
+c:\users\haro_\documents\visual studio 2015\Projects\MIDAS\MIDAS\bin\Debug\MIDAS.pdb
+c:\users\haro_\documents\visual studio 2015\Projects\MIDAS\MIDAS\obj\Debug\MIDAS.csprojResolveAssemblyReference.cache
+c:\users\haro_\documents\visual studio 2015\Projects\MIDAS\MIDAS\obj\Debug\MIDAS.Form1.resources
+c:\users\haro_\documents\visual studio 2015\Projects\MIDAS\MIDAS\obj\Debug\MIDAS.Properties.Resources.resources
+c:\users\haro_\documents\visual studio 2015\Projects\MIDAS\MIDAS\obj\Debug\MIDAS.csproj.GenerateResource.Cache
+c:\users\haro_\documents\visual studio 2015\Projects\MIDAS\MIDAS\obj\Debug\MIDAS.exe
+c:\users\haro_\documents\visual studio 2015\Projects\MIDAS\MIDAS\obj\Debug\MIDAS.pdb

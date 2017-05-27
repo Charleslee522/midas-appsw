@@ -1,9 +1,0 @@
-c:\users\haro_\documents\visual studio 2015\Projects\Small_Training\Small_Training\bin\Debug\Small_Training.exe.config
-c:\users\haro_\documents\visual studio 2015\Projects\Small_Training\Small_Training\bin\Debug\Small_Training.exe
-c:\users\haro_\documents\visual studio 2015\Projects\Small_Training\Small_Training\bin\Debug\Small_Training.pdb
-c:\users\haro_\documents\visual studio 2015\Projects\Small_Training\Small_Training\obj\Debug\Small_Training.csprojResolveAssemblyReference.cache
-c:\users\haro_\documents\visual studio 2015\Projects\Small_Training\Small_Training\obj\Debug\Small_Training.Properties.Resources.resources
-c:\users\haro_\documents\visual studio 2015\Projects\Small_Training\Small_Training\obj\Debug\Small_Training.csproj.GenerateResource.Cache
-c:\users\haro_\documents\visual studio 2015\Projects\Small_Training\Small_Training\obj\Debug\Small_Training.exe
-c:\users\haro_\documents\visual studio 2015\Projects\Small_Training\Small_Training\obj\Debug\Small_Training.pdb
-c:\users\haro_\documents\visual studio 2015\Projects\Small_Training\Small_Training\obj\Debug\Small_Training.Form1.resources

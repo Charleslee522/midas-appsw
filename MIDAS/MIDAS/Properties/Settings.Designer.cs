@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Small_Training.Properties
+namespace MIDAS.Properties
 {
 
 
