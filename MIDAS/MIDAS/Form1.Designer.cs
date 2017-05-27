@@ -33,8 +33,10 @@
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "Class"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
             System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Interface"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
+            "Implement"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
             System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
+            "Interface"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
+            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
             "Line"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -237,14 +239,16 @@
             listViewGroup2});
             listViewItem1.Group = listViewGroup1;
             listViewItem1.StateImageIndex = 0;
-            listViewItem2.Group = listViewGroup1;
-            listViewItem2.StateImageIndex = 0;
-            listViewItem3.Group = listViewGroup2;
+            listViewItem2.Group = listViewGroup2;
+            listViewItem3.Group = listViewGroup1;
             listViewItem3.StateImageIndex = 0;
+            listViewItem4.Group = listViewGroup2;
+            listViewItem4.StateImageIndex = 0;
             this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem1,
             listViewItem2,
-            listViewItem3});
+            listViewItem3,
+            listViewItem4});
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
             this.listView1.RightToLeft = System.Windows.Forms.RightToLeft.No;

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;  // Console
 using Newtonsoft.Json;
+using System.Drawing.Drawing2D;
 
 namespace MIDAS
 {
@@ -398,8 +399,9 @@ namespace MIDAS
 
             if (Item != null)
             {
-                if (Item.Text == "Line")
+                if (Item.Text == "Line" || Item.Text=="Implement")
                     Console.WriteLine("Line");
+                // 여기 에러? 한번 보자.
                 else
                 {
                     ClassGenerate(RightPanel.PointToClient(MousePosition), Item.Text);
@@ -587,27 +589,60 @@ namespace MIDAS
             Graphics graphic = RightPanel.CreateGraphics();
             graphic.Clear(RightPanel.BackColor);
             Pen pen = new Pen(Color.Black,3);
+            pen.DashStyle = DashStyle.Solid;
+            //pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+            Brush brush = new SolidBrush(Color.Black);
             Point p1, p2;
+
             for (int i = 0; i < fromControl.Count && i < toControl.Count; i++)
             {
                 p1 = new Point(fromControl[i].Left + fromControl[i].Width / 2, fromControl[i].Top + fromControl[i].Height / 2);
                 p2 = new Point(toControl[i].Left + toControl[i].Width / 2, toControl[i].Top + toControl[i].Height / 2);
-                
+
                 if (fromControl[i] == toControl[i])
                 {
-                    graphic.DrawLine(pen, p1, new Point(p1.X + fromControl[i].Width, p2.Y));
+                    graphic.DrawLine(pen, p1, new Point(fromControl[i].Right + 30, p2.Y));
 
-                    graphic.DrawLine(pen, new Point(p1.X + fromControl[i].Width, p2.Y),
-                        new Point(p1.X + fromControl[i].Width, p2.Y - fromControl[i].Height));
+                    graphic.DrawLine(pen, new Point(fromControl[i].Right + 30, p2.Y),
+                        new Point(fromControl[i].Right + 30, fromControl[i].Top - 30));
 
-                    graphic.DrawLine(pen, new Point(p1.X + fromControl[i].Width, p2.Y - fromControl[i].Height),
-                        new Point(p1.X, p2.Y - fromControl[i].Height));
+                    graphic.DrawLine(pen, new Point(fromControl[i].Right + 30, fromControl[i].Top - 30),
+                        new Point(p1.X, fromControl[i].Top - 30));
 
-                    graphic.DrawLine(pen, new Point(p1.X, p2.Y - fromControl[i].Height),
+                    pen.EndCap = LineCap.ArrowAnchor;
+                    graphic.DrawLine(pen, new Point(p1.X, fromControl[i].Top - 30),
                         new Point(p1.X, fromControl[i].Top));
                 }
                 else
-                    graphic.DrawLine(pen, p1, p2);
+                {
+                    pen.EndCap = LineCap.ArrowAnchor;
+                    double degree = (double)p2.Y - p1.Y / (double)p2.X - p1.X;
+
+                    if (fromControl[i].Top < toControl[i].Bottom)
+                    {
+                        graphic.DrawLine(pen, p1, new Point(p2.X, toControl[i].Top));
+                        continue;
+                    }
+                    if(fromControl[i].Left > toControl[i].Right)
+                    {
+                        graphic.DrawLine(pen, p1, new Point(toControl[i].Right, p2.Y));
+                        continue;
+                    }
+                    if (fromControl[i].Bottom < toControl[i].Top)
+                    {
+                        graphic.DrawLine(pen, p1, new Point(p2.X, toControl[i].Bottom));
+                        continue;
+                    }
+                    if (fromControl[i].Right < toControl[i].Left)
+                    {
+                        graphic.DrawLine(pen, p1, new Point(toControl[i].Left, p2.Y));
+                        continue;
+                    }
+                    else
+                    {
+                        graphic.DrawLine(pen, p1, new Point(p2.X, toControl[i].Bottom));
+                    }
+                }
             }
         }
 
