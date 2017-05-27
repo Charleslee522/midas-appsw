@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;  // Console
@@ -23,10 +24,43 @@ namespace MIDAS
         [DllImport("kernel32.dll", SetLastError = true)]  // Console
         [return: MarshalAs(UnmanagedType.Bool)]  // Console
         static extern bool AllocConsole();  // Console
+         
+        private string targetFileName = "";
+
+        private void saveFile(string fileName)
+        {
+            this.targetFileName = fileName;
+            this.Text = "MIDAS UML -- " + fileName;
+        }
 
         private void newMenuItem_Click(object sender, EventArgs e)
         {
+            if(String.IsNullOrWhiteSpace(targetFileName))
+            {
 
+            }
+            else
+            {
+                const string message = "Do you want to save the changes you made?";
+                const string caption = "Save Changes";
+                DialogResult result = MessageBox.Show(message, caption,
+                                             MessageBoxButtons.YesNoCancel,
+                                             MessageBoxIcon.Question);
+
+                if (result == DialogResult.No)
+                {
+                    RightPanel.Controls.Clear();
+                    targetFileName = "";
+                }
+                else if(result == DialogResult.Yes)
+                {
+                    saveMenuItem_Click(sender, e);
+                }
+                else // DialogResult.Cancel
+                {
+                    // do nothing
+                }
+            }
         }
 
         private void openMenuItem_Click(object sender, EventArgs e)
@@ -37,23 +71,37 @@ namespace MIDAS
             openFileDialog1.Title = "Select a mcu file";
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                RightPanel.Controls.Clear();
                 System.IO.StreamReader sr = new System.IO.StreamReader(openFileDialog1.FileName);
-                Dictionary<string, object> content =
-                JsonConvert.DeserializeObject<Dictionary<string, object>>(sr.ReadToEnd());
-                int pointX = Convert.ToInt32(content["pointX"]);
-                int pointY = Convert.ToInt32(content["pointY"]);
-                int height = Convert.ToInt32(content["Height"]);
-                int width = Convert.ToInt32(content["Width"]);
-                string attribute = Convert.ToString(content["attribute"]);
-                string method = Convert.ToString(content["method"]);
-                string name = Convert.ToString(content["name"]);
+                List<Dictionary<string, object>> contentList =
+                JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(sr.ReadToEnd());
+
+                foreach (Dictionary<string, object> content in contentList) {
+                    string kind = Convert.ToString(content["kind"]);
+                    string name = Convert.ToString(content["name"]);
+                    string attribute = Convert.ToString(content["attribute"]);
+                    string method = Convert.ToString(content["method"]);
+
+                    int pointX = Convert.ToInt32(content["pointX"]);
+                    int pointY = Convert.ToInt32(content["pointY"]);
+                    Point point = new Point(pointX, pointY);
+
+                    int width = Convert.ToInt32(content["Width"]);
+                    int height = Convert.ToInt32(content["Height"]);
+                    Size size = new Size(width, height);
+
+                    ClassGenerate(kind, name, attribute, method, point, size);
+                }
                 sr.Close();
             }
         }
 
         private void saveMenuItem_Click(object sender, EventArgs e)
         {
-
+            if(!String.IsNullOrWhiteSpace(targetFileName))
+            {
+                saveAsMenuItem_Click(sender, e);
+            }
         }
 
         private void saveAsMenuItem_Click(object sender, EventArgs e)
@@ -64,21 +112,21 @@ namespace MIDAS
 
             if (saveFileDiaglog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-
-                if (saveFileDiaglog1.FileName != "")
+                if (! String.IsNullOrWhiteSpace(saveFileDiaglog1.FileName))
                 {
                     System.IO.FileStream fs = (System.IO.FileStream)saveFileDiaglog1.OpenFile();
-
                     switch (saveFileDiaglog1.FilterIndex)
                     {
                         case 1:
                             if (fs.CanWrite)
                             {
                                 System.IO.StreamWriter file = new System.IO.StreamWriter(fs);
-                                Dictionary<string, object> content = new Dictionary<string, object>();
+                                List<Dictionary<string, object>> contentList = new List<Dictionary<string, object>>();
                                 foreach (Control panelControl in RightPanel.Controls)
                                 {
+                                    Dictionary<string, object> content = new Dictionary<string, object>();
                                     GroupBox box = (GroupBox)panelControl;
+                                    content.Add("kind", box.Text);
                                     content.Add("pointX", box.Location.X);
                                     content.Add("pointY", box.Location.Y);
                                     content.Add("Height", box.Size.Height);
@@ -105,11 +153,13 @@ namespace MIDAS
                                             content.Add("name", nameLabel.Text);
                                         }
                                     }
+                                    contentList.Add(content);
                                 }
 
                                 JsonSerializer serializer = new JsonSerializer();
-                                serializer.Serialize(file, content);
+                                serializer.Serialize(file, contentList);
                                 file.Close();
+                                contentList.Clear();
                             }
                             break;
                         default:
@@ -117,6 +167,8 @@ namespace MIDAS
 
                     }
                 }
+
+                saveFile(Path.GetFileName(saveFileDiaglog1.FileName));
             }
 
         }
@@ -187,6 +239,47 @@ namespace MIDAS
         private void CloseMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void ClassGenerate(string Kinds, string name, string attribute, string method, Point point, Size size)
+        {
+            SplitContainer splitContainer2 = new SplitContainer();
+            GroupBox groupbox = new GroupBox();
+            groupbox.Text = Kinds;
+            groupbox.Location = point;
+            groupbox.Size = size;
+            groupbox.BackColor = Color.White;
+            groupbox.Controls.Add(splitContainer2);
+            groupbox.MouseDown += new MouseEventHandler(groupbox_MouseDown);
+            groupbox.MouseUp += new MouseEventHandler(groupbox_MouseUp);
+            groupbox.MouseMove += new MouseEventHandler(groupbox_MouseMove);
+            groupbox.Padding = new Padding(5);
+
+
+            Label Name = new Label();
+            Name.Text = name;
+            Name.Dock = DockStyle.Top;
+            groupbox.Controls.Add(Name);
+
+            splitContainer2.Dock = DockStyle.Fill;
+            splitContainer2.Location = new Point(3, 50);
+            splitContainer2.Name = "splitContainer2";
+            splitContainer2.Orientation = Orientation.Horizontal;
+            splitContainer2.BorderStyle = BorderStyle.Fixed3D;
+
+            Label Attribute = new Label();
+            Attribute.Text = attribute;
+            Attribute.Dock = DockStyle.Fill;
+            Attribute.MouseDoubleClick += new MouseEventHandler(Lable_MouseDoubleDown);
+            splitContainer2.Panel1.Controls.Add(Attribute);
+
+            Label Method = new Label();
+            Method.Text = method;
+            Method.Dock = DockStyle.Fill;
+            Method.MouseDoubleClick += new MouseEventHandler(Lable_MouseDoubleDown);
+            splitContainer2.Panel2.Controls.Add(Method);
+
+            RightPanel.Controls.Add(groupbox);
         }
         
         private void ClassGenerate(Point point, String Kinds)
