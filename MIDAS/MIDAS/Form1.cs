@@ -148,16 +148,17 @@ namespace MIDAS
         
         private void ClassGenerate(Point point, String Kinds)
         {
+            SplitContainer splitContainer2 = new SplitContainer();
             GroupBox groupbox = new GroupBox();
             groupbox.Text = Kinds;
             groupbox.Location = point;
             groupbox.BackColor = Color.White;
-            groupbox.Controls.Add(this.splitContainer2);
+            groupbox.Controls.Add(splitContainer2);
             groupbox.MouseDown += new MouseEventHandler(groupbox_MouseDown);
             groupbox.MouseUp += new MouseEventHandler(groupbox_MouseUp);
             groupbox.MouseMove += new MouseEventHandler(groupbox_MouseMove);
             groupbox.Padding = new Padding(5);
-
+            
 
             Label Name = new Label();
             Name.Text = "Number_";
