@@ -157,9 +157,10 @@ namespace MIDAS
             groupbox.MouseDown += new MouseEventHandler(groupbox_MouseDown);
             groupbox.MouseUp += new MouseEventHandler(groupbox_MouseUp);
             groupbox.MouseMove += new MouseEventHandler(groupbox_MouseMove);
+            groupbox.GotFocus += new EventHandler(groupbox_GotFocus);
+            groupbox.LostFocus += new EventHandler(groupbox_LostFocus);
             groupbox.Padding = new Padding(5);
             
-
             Label Name = new Label();
             Name.Text = "Number_";
             Name.Dock = DockStyle.Top;
@@ -297,6 +298,14 @@ namespace MIDAS
             }
         }
 
+        private void groupbox_GotFocus(object sender, EventArgs e)
+        {
+
+        }
+        private void groupbox_LostFocus(object sender, EventArgs e)
+        {
+
+        }
 
         // 이하 Lable TextBox
         private void Lable_MouseDoubleDown(object sender, MouseEventArgs e)
@@ -307,21 +316,21 @@ namespace MIDAS
             tempBox.Multiline = true;
             tempBox.Dock = DockStyle.Fill;
             tempBox.Text = Dest.Text;
-            tempBox.KeyPress += new KeyPressEventHandler(OutKey);
-            tempBox.Leave += new EventHandler(lostFocus);
+            tempBox.Leave += new EventHandler(tempBox_lostFocus);
+            tempBox.KeyPress += new KeyPressEventHandler(tempBox_OutKey);
 
             Dest.Controls.Add(tempBox);
             tempBox.Select();
         }
 
-        private void lostFocus(object sender, EventArgs e)
+        private void tempBox_lostFocus(object sender, EventArgs e)
         {
             Control control = (Control)sender;
             control.Parent.Text = control.Text;
             control.Dispose();
         }
 
-        private void OutKey(object sender, KeyPressEventArgs e)
+        private void tempBox_OutKey(object sender, KeyPressEventArgs e)
         {
             Control control = (Control)sender;
             control.Parent.Text = control.Text;
