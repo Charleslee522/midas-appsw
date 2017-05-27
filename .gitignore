@@ -1,3 +1,5 @@
 MIDAS/.vs/
 MIDAS/MIDAS/bin/
 MIDAS/MIDAS/obj/
+*.exe
+*.pdb
