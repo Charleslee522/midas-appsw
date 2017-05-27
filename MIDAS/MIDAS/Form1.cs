@@ -30,6 +30,7 @@ namespace MIDAS
 
         private void openMenuItem_Click(object sender, EventArgs e)
         {
+            // 기존 open된 파일 경로가 default로 저장되어있어야 함.
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             openFileDialog1.Filter = "Model Class UML|*.mcu";
             openFileDialog1.Title = "Select a mcu file";
@@ -83,6 +84,21 @@ namespace MIDAS
         }
 
         private void exportItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void fileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripMenuItem1_Click_1(object sender, EventArgs e)
         {
 
         }
