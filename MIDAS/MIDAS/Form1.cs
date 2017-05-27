@@ -104,23 +104,29 @@ namespace MIDAS
         }
         private void button1_Click(object sender, EventArgs e)
         {
+            ListView Class = new ListView();
+            ListViewGroup GroupName = new ListViewGroup("NameGroup", "Name");
+            Class.Groups.Add(GroupName);
+            ListViewGroup GroupAtribute = new ListViewGroup("AtributeGroup", "Atribute");
+            Class.Groups.Add(GroupAtribute);
+            ListViewGroup GroupMethod = new ListViewGroup("MethodGroup", "Method");
+            Class.Groups.Add(GroupMethod);
+            
+            Class.Groups.AddRange(new ListViewGroup[] { GroupName, GroupAtribute, GroupMethod });
+            ListViewItem ItemName = new ListViewItem(GroupName);
+            ListViewItem ItemAtribute = new ListViewItem(GroupAtribute);
+            ListViewItem ItemMethod = new ListViewItem(GroupMethod);
 
-            Panel Class = new Panel();
-            TextBox Name = new TextBox();
-            Name.Dock = DockStyle.Top;
-            Name.Text = "1";
-            TextBox Attribute = new TextBox();
-            Attribute.Dock = DockStyle.Fill;
-            Attribute.Text = "1";
-            TextBox Method = new TextBox();
-            Method.Dock = DockStyle.Bottom;
-            Method.Text = "1";
-
-            Class.Controls.Add(Name);
-            Class.Controls.Add(Attribute);
-            Class.Controls.Add(Method);
+            Class.Items.AddRange(new ListViewItem[] { ItemName, ItemAtribute, ItemMethod });
+            Class.Location = new Point(67, 74);
+            Class.Name = "listView2";
+            Class.Size = new Size(154, 131);
+            Class.TabIndex = 1;
+            Class.UseCompatibleStateImageBehavior = false;
+            Class.View = View.SmallIcon;
 
             RightPanel.Controls.Add(Class);
+            Console.WriteLine(1);
         }
 
         private void CloseMenuItem_Click(object sender, EventArgs e)
