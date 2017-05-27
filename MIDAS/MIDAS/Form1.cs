@@ -102,7 +102,18 @@ namespace MIDAS
         {
 
         }
+
         private void button1_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine("클릭!!");
+        }
+
+        private void CloseMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        
+        private void ClassGenerate(Point point)
         {
             ListView Class = new ListView();
             ListViewGroup GroupName = new ListViewGroup("NameGroup", "Name");
@@ -111,7 +122,7 @@ namespace MIDAS
             Class.Groups.Add(GroupAtribute);
             ListViewGroup GroupMethod = new ListViewGroup("MethodGroup", "Method");
             Class.Groups.Add(GroupMethod);
-            
+
             Class.Groups.AddRange(new ListViewGroup[] { GroupName, GroupAtribute, GroupMethod });
             ListViewItem ItemName = new ListViewItem(GroupName);
             ListViewItem ItemAtribute = new ListViewItem(GroupAtribute);
@@ -124,14 +135,30 @@ namespace MIDAS
             Class.TabIndex = 1;
             Class.UseCompatibleStateImageBehavior = false;
             Class.View = View.SmallIcon;
+            Class.Location = point;
 
             RightPanel.Controls.Add(Class);
-            Console.WriteLine(1);
         }
 
-        private void CloseMenuItem_Click(object sender, EventArgs e)
+        Object Item;
+
+        private void listView1_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            Application.Exit();
+            this.Cursor = Cursors.Hand;
+            Item = e.Item;
+            Console.WriteLine("Mouse Down " + Item);
+        }
+
+        private void RightPanel_MouseUp(object sender, MouseEventArgs e)
+        {
+            this.Cursor = Cursors.Default;
+
+            if (Item != null)
+            {
+                ClassGenerate(RightPanel.PointToClient(MousePosition));
+                Item = null;
+                Console.WriteLine("Object Create" + Item);
+            }
         }
     }
 }

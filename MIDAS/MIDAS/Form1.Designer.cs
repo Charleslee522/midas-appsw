@@ -230,7 +230,6 @@
             this.listView1.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2});
-            this.listView1.HoverSelection = true;
             listViewItem1.Group = listViewGroup1;
             listViewItem1.StateImageIndex = 0;
             listViewItem2.Group = listViewGroup1;
@@ -249,6 +248,7 @@
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.SmallIcon;
+            this.listView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listView1_ItemDrag);
             // 
             // RightPanel
             // 
@@ -258,6 +258,7 @@
             this.RightPanel.Name = "RightPanel";
             this.RightPanel.Size = new System.Drawing.Size(454, 286);
             this.RightPanel.TabIndex = 0;
+            this.RightPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.RightPanel_MouseUp);
             // 
             // button1
             // 
