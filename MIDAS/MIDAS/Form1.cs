@@ -370,10 +370,10 @@ namespace MIDAS
             // 클릭 이벤트로 바꿔 줘야 함
             this.Cursor = Cursors.Hand;
             Item = (ListViewItem)e.Item;
+            
             if (Item.Text == "Line")
             {
                 isLine = true;
-                Item = null;
                 //Console.WriteLine(Item.Text);
             }
         }
@@ -398,9 +398,14 @@ namespace MIDAS
 
             if (Item != null)
             {
-                ClassGenerate(RightPanel.PointToClient(MousePosition), Item.Text);
-                Changed();
-                Item = null;
+                if (Item.Text == "Line")
+                    Console.WriteLine("Line");
+                else
+                {
+                    ClassGenerate(RightPanel.PointToClient(MousePosition), Item.Text);
+                    Changed();
+                    Item = null;
+                }
             }
         }
         
@@ -523,7 +528,7 @@ namespace MIDAS
                 control.Dispose();
         }
         
-        private void BasicDrawLine()
+        private void DependencyDrawLine()
         {
             Graphics graphic = RightPanel.CreateGraphics();
             graphic.Clear(RightPanel.BackColor);
@@ -581,7 +586,7 @@ namespace MIDAS
         {
             Graphics graphic = RightPanel.CreateGraphics();
             graphic.Clear(RightPanel.BackColor);
-            Pen pen = new Pen(Color.Black);
+            Pen pen = new Pen(Color.Black,3);
             Point p1, p2;
             for (int i = 0; i < fromControl.Count && i < toControl.Count; i++)
             {
@@ -606,5 +611,10 @@ namespace MIDAS
             }
         }
 
+        private void listView1_MouseUp(object sender, MouseEventArgs e)
+        {
+            if(Item!=null)
+                Item.Selected = false;
+        }
     }
 }
