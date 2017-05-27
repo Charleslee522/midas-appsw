@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;  // Console
@@ -23,10 +24,43 @@ namespace MIDAS
         [DllImport("kernel32.dll", SetLastError = true)]  // Console
         [return: MarshalAs(UnmanagedType.Bool)]  // Console
         static extern bool AllocConsole();  // Console
+         
+        private string targetFileName = "";
+
+        private void saveFile(string fileName)
+        {
+            this.targetFileName = fileName;
+            this.Text = "MIDAS UML -- " + fileName;
+        }
 
         private void newMenuItem_Click(object sender, EventArgs e)
         {
+            if(String.IsNullOrWhiteSpace(targetFileName))
+            {
 
+            }
+            else
+            {
+                const string message = "Do you want to save the changes you made?";
+                const string caption = "Save Changes";
+                DialogResult result = MessageBox.Show(message, caption,
+                                             MessageBoxButtons.YesNoCancel,
+                                             MessageBoxIcon.Question);
+
+                if (result == DialogResult.No)
+                {
+                    RightPanel.Controls.Clear();
+                    targetFileName = "";
+                }
+                else if(result == DialogResult.Yes)
+                {
+                    saveMenuItem_Click(sender, e);
+                }
+                else // DialogResult.Cancel
+                {
+                    // do nothing
+                }
+            }
         }
 
         private void openMenuItem_Click(object sender, EventArgs e)
@@ -64,7 +98,10 @@ namespace MIDAS
 
         private void saveMenuItem_Click(object sender, EventArgs e)
         {
-
+            if(!String.IsNullOrWhiteSpace(targetFileName))
+            {
+                saveAsMenuItem_Click(sender, e);
+            }
         }
 
         private void saveAsMenuItem_Click(object sender, EventArgs e)
@@ -75,11 +112,9 @@ namespace MIDAS
 
             if (saveFileDiaglog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-
-                if (saveFileDiaglog1.FileName != "")
+                if (! String.IsNullOrWhiteSpace(saveFileDiaglog1.FileName))
                 {
                     System.IO.FileStream fs = (System.IO.FileStream)saveFileDiaglog1.OpenFile();
-
                     switch (saveFileDiaglog1.FilterIndex)
                     {
                         case 1:
@@ -121,7 +156,6 @@ namespace MIDAS
                                     contentList.Add(content);
                                 }
 
-
                                 JsonSerializer serializer = new JsonSerializer();
                                 serializer.Serialize(file, contentList);
                                 file.Close();
@@ -133,6 +167,8 @@ namespace MIDAS
 
                     }
                 }
+
+                saveFile(Path.GetFileName(saveFileDiaglog1.FileName));
             }
 
         }
