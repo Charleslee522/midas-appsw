@@ -27,6 +27,10 @@ namespace MIDAS
         static extern bool AllocConsole();  // Console
 
         private SaveFile sf = new SaveFile();
+        private HashSet<string> classNameSet = new HashSet<string>();
+        private HashSet<string> interfaceNameSet = new HashSet<string>();
+        int idClassCount = 0;
+        int idInterfaceCount = 0;
 
         private void Changed()
         {
@@ -92,20 +96,40 @@ namespace MIDAS
                 JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(sr.ReadToEnd());
 
                 foreach (Dictionary<string, object> content in contentList) {
-                    string kind = Convert.ToString(content["kind"]);
-                    string name = Convert.ToString(content["name"]);
-                    string attribute = Convert.ToString(content["attribute"]);
-                    string method = Convert.ToString(content["method"]);
+                    if(content.ContainsKey("name"))
+                    {
+                        string kind = Convert.ToString(content["kind"]);
+                        string name = Convert.ToString(content["name"]);
+                        string attribute = Convert.ToString(content["attribute"]);
+                        string method = Convert.ToString(content["method"]);
 
-                    int pointX = Convert.ToInt32(content["pointX"]);
-                    int pointY = Convert.ToInt32(content["pointY"]);
-                    Point point = new Point(pointX, pointY);
+                        int pointX = Convert.ToInt32(content["pointX"]);
+                        int pointY = Convert.ToInt32(content["pointY"]);
+                        Point point = new Point(pointX, pointY);
 
-                    int width = Convert.ToInt32(content["Width"]);
-                    int height = Convert.ToInt32(content["Height"]);
-                    Size size = new Size(width, height);
+                        int width = Convert.ToInt32(content["Width"]);
+                        int height = Convert.ToInt32(content["Height"]);
+                        Size size = new Size(width, height);
+                        ClassGenerate(kind, name, attribute, method, point, size);
+                    }
+                }
+                Dictionary<string, Control> controlDic = new Dictionary<string, Control>();
+                foreach (Control control in RightPanel.Controls)
+                {
+                    controlDic.Add(getLabelName(control), control);
+                }
 
-                    ClassGenerate(kind, name, attribute, method, point, size);
+                foreach (Dictionary<string, object> content in contentList)
+                {
+                    if (content.ContainsKey("from"))
+                    {
+                        //"from":"Class_1","to":"Interface_1","kind":1
+                        string from = Convert.ToString(content["from"]);
+                        fromControl.Add(controlDic[from]);
+                        string to = Convert.ToString(content["to"]);
+                        toControl.Add(controlDic[to]);
+                        int kind = Convert.ToInt32(content["kind"]);
+                    }
                 }
                 sr.Close();
             }
@@ -134,6 +158,22 @@ namespace MIDAS
             {
                 // do nothing
             }
+        }
+
+        private string getLabelName(Control control)
+        {
+            if (control is GroupBox)
+            {
+                foreach (Control boxControl in control.Controls)
+                {
+                    if (boxControl is Label)
+                    {
+                        Label nameLabel = (Label)boxControl;
+                        return nameLabel.Text;
+                    }
+                }
+            }
+            return "";
         }
 
         private void saveTo(System.IO.FileStream fs)
@@ -174,6 +214,15 @@ namespace MIDAS
                         }
                     }
                     contentList.Add(content);
+                }
+
+                for (int i = 0; i < fromControl.Count && i < toControl.Count; i++)
+                {
+                    Dictionary<string, object> lineContent = new Dictionary<string, object>();
+                    lineContent.Add("from", getLabelName(fromControl[i]));
+                    lineContent.Add("to", getLabelName(toControl[i]));
+                    lineContent.Add("kind", 1);
+                    contentList.Add(lineContent);
                 }
 
                 JsonSerializer serializer = new JsonSerializer();
@@ -285,6 +334,12 @@ namespace MIDAS
 
         private void ClassGenerate(string Kinds, string name, string attribute, string method, Point point, Size size)
         {
+
+            if(! classNameSet.Add(name))
+            {
+                //error!
+            }
+
             SplitContainer splitContainer2 = new SplitContainer();
             GroupBox groupbox = new GroupBox();
             groupbox.Text = Kinds;
@@ -324,6 +379,38 @@ namespace MIDAS
             RightPanel.Controls.Add(groupbox);
         }
         
+        private string getUniqueName(String Kinds)
+        {
+            string uniqueName = "";
+
+            if(Kinds == "Class")
+            {
+                uniqueName = Kinds + "_" + this.idClassCount.ToString();
+                while (!classNameSet.Add(uniqueName))
+                {
+                    this.idClassCount++;
+                    uniqueName = Kinds + "_" + this.idClassCount.ToString();
+                }
+                this.idClassCount++;
+            }
+            else if (Kinds == "Interface")
+            {
+                uniqueName = Kinds + "_" + this.idInterfaceCount.ToString();
+                while (!interfaceNameSet.Add(uniqueName))
+                {
+                    this.idInterfaceCount++;
+                    uniqueName = Kinds + "_" + this.idInterfaceCount.ToString();
+                }
+                this.idInterfaceCount++;
+            }
+            else
+            {
+                // do nothing
+            }
+
+            return uniqueName;
+        }
+
         private void ClassGenerate(Point point, String Kinds)
         {
             SplitContainer splitContainer2 = new SplitContainer();
@@ -338,7 +425,9 @@ namespace MIDAS
             groupbox.MouseMove += new MouseEventHandler(groupbox_MouseMove);
 
             Label Name = new Label();
-            Name.Text = "Number_";
+            
+            Name.Text = getUniqueName(Kinds);
+            
             Name.Dock = DockStyle.Top;
             Name.MouseDoubleClick += new MouseEventHandler(Lable_MouseDoubleDown);
             groupbox.Controls.Add(Name);
