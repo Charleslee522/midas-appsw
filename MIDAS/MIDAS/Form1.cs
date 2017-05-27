@@ -44,6 +44,24 @@ namespace MIDAS
             saveFileDiaglog1.Filter = "Model Class UML|*.mcu";
             saveFileDiaglog1.Title = "Save an mcu file";
             saveFileDiaglog1.ShowDialog();
+
+            if(saveFileDiaglog1.FileName != "")
+            {
+                System.IO.FileStream fs = (System.IO.FileStream)saveFileDiaglog1.OpenFile();
+
+                switch(saveFileDiaglog1.FilterIndex)
+                {
+                    case 1:
+                        if(fs.CanWrite)
+                        {
+                            System.IO.StreamWriter file = new System.IO.StreamWriter(fs);
+                            file.WriteLine("Hello World!");
+                            file.Close();
+                        }
+                        break;
+
+                }
+            }
         }
 
         private void importMenuItem_Click(object sender, EventArgs e)
