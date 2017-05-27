@@ -189,11 +189,14 @@ namespace MIDAS
 
             if (str == "Rename")
             {
-                target.Groups[0].Items[0].Text = "11";
+                InputBox ib = new InputBox(target.Groups[0].Items[0]);
+                ib.Show();
             }
             if (str == "Add Atribute")
             {
-
+                ListViewItem newItem = new ListViewItem(target.Groups[0]);
+                InputBox ib = new InputBox(newItem);
+                ib.Show();
             }
             if (str == "Add Method")
             {
@@ -244,5 +247,57 @@ namespace MIDAS
                 Item = null;
             }
         }
+    }
+}
+class InputBox : Form
+{
+    TextBox tb;
+    Label lb;
+    Button yesButton;
+    Button noButton;
+    ListViewItem Item;
+
+    public InputBox(ListViewItem Item)
+    {
+        this.Item = Item;
+        this.Width = 170;
+        this.Height = 95;
+        FormBorderStyle = FormBorderStyle.FixedSingle;
+
+        lb = new Label();
+        lb.Location = new Point(0, 5);
+        lb.Width = 70;
+        lb.TextAlign = ContentAlignment.MiddleCenter;
+        lb.Text = "Name Input";
+
+        tb = new TextBox();
+        tb.Location = new Point(80,5);
+        tb.Width = 70;
+        tb.Text = "내용 입력";
+
+        yesButton = new Button();
+        yesButton.Location = new Point(0, 30);
+        yesButton.Text = "Ok";
+        yesButton.Click += new EventHandler(this.button1_Click);
+
+        noButton = new Button();
+        noButton.Location = new Point(80, 30);
+        noButton.Text = "Cancle";
+        noButton.Click += new EventHandler(this.button2_Click);
+        
+        Controls.Add(lb);
+        Controls.Add(tb);
+        Controls.Add(yesButton);
+        Controls.Add(noButton);
+    }
+    public void button1_Click(object sender, EventArgs e)
+    {
+        Item.Text = tb.Text;
+        this.Dispose();
+    }
+
+    public void button2_Click(object sender, EventArgs e)
+    {
+        this.Dispose();
     }
 }
