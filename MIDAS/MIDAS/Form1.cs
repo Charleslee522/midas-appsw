@@ -150,15 +150,24 @@ namespace MIDAS
         {
             GroupBox groupbox = new GroupBox();
             groupbox.Text = "Class";
-            groupbox.BackColor = Color.LightGreen;
+            groupbox.Location = point;
+            groupbox.BackColor = Color.White;
             groupbox.Controls.Add(this.splitContainer2);
+            groupbox.MouseDown += new MouseEventHandler(groupbox_MouseDown);
+            groupbox.MouseUp += new MouseEventHandler(groupbox_MouseUp);
+            groupbox.MouseMove += new MouseEventHandler(groupbox_MouseMove);
+            groupbox.Padding = new Padding(5);
+
+        Label Name = new Label();
+            Name.Text = "Number_";
+            Name.Dock = DockStyle.Top;
+            groupbox.Controls.Add(Name);
 
             splitContainer2.Dock = DockStyle.Fill;
-            splitContainer2.Location = new Point(3, 17);
+            splitContainer2.Location = new Point(3, 50);
             splitContainer2.Name = "splitContainer2";
             splitContainer2.Orientation = Orientation.Horizontal;
             splitContainer2.BorderStyle = BorderStyle.Fixed3D;
-            splitContainer2.TabIndex = 0;
             
             Label Atribute = new Label();
             Atribute.Text = "Atribute";
@@ -240,7 +249,35 @@ namespace MIDAS
                 Item = null;
             }
         }
-        
+
+        bool mouseClicked = false;
+
+        private void groupbox_MouseDown(object sender, MouseEventArgs e)
+        {
+            Control temp = (Control)sender;
+
+            Console.WriteLine(temp.Height + " " + e.Y);
+            Console.WriteLine(temp.Width + " " + e.X);
+
+            if (temp.Height - 5 <= e.Y && temp.Width - 5 <= e.X)
+                mouseClicked = true;
+        }
+
+        private void groupbox_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouseClicked = false;
+        }
+
+        private void groupbox_MouseMove(object sender, MouseEventArgs e)
+        {
+            Control temp = (Control)sender;
+
+            if (mouseClicked)
+            {
+                temp.Height = temp.Top + e.Y - temp.Location.Y;
+                temp.Width = temp.Left + e.X - temp.Location.X;
+            }
+        }
         private void Lable_MouseDoubleDown(object sender, MouseEventArgs e)
         {
             Label Dest = ((Label)sender);
@@ -254,6 +291,7 @@ namespace MIDAS
 
             Dest.Controls.Add(tempBox);
         }
+
         private void lostFocus(object sender, EventArgs e)
         {
             Control control = (Control)sender;
