@@ -223,7 +223,7 @@
             // 
             this.LeftWindow.Panel2.Controls.Add(this.listView1);
             this.LeftWindow.Size = new System.Drawing.Size(189, 288);
-            this.LeftWindow.SplitterDistance = 82;
+            this.LeftWindow.SplitterDistance = 40;
             this.LeftWindow.TabIndex = 0;
             // 
             // listView1
@@ -261,7 +261,7 @@
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
             this.listView1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.listView1.Size = new System.Drawing.Size(187, 200);
+            this.listView1.Size = new System.Drawing.Size(187, 242);
             this.listView1.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listView1.TabIndex = 0;
             this.listView1.TileSize = new System.Drawing.Size(200, 28);
