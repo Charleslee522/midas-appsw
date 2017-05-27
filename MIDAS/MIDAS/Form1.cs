@@ -163,12 +163,14 @@ namespace MIDAS
 
             Class.Groups.AddRange(new ListViewGroup[] { GroupName, GroupAtribute, GroupMethod });
             ListViewItem ItemName = new ListViewItem(GroupName);
+            ItemName.Text = "Class_"+(listCount+1);
+            listCount++;
             ListViewItem ItemAtribute = new ListViewItem(GroupAtribute);
             ListViewItem ItemMethod = new ListViewItem(GroupMethod);
 
             Class.Items.AddRange(new ListViewItem[] { ItemName, ItemAtribute, ItemMethod });
             Class.Location = new Point(67, 74);
-            Class.Name = "listView2";
+            Class.Name = "NewClass";
             Class.Size = new Size(154, 131);
             Class.TabIndex = 1;
             Class.UseCompatibleStateImageBehavior = false;
@@ -184,9 +186,10 @@ namespace MIDAS
 
             MenuItem mI = (MenuItem)obj;
             String str = mI.Text;
+
             if (str == "Rename")
             {
-
+                target.Groups[0].Items[0].Text = "11";
             }
             if (str == "Add Atribute")
             {
@@ -202,6 +205,7 @@ namespace MIDAS
             }
         }
 
+        int listCount;
         ListView target;
         ListViewItem Item;
 
