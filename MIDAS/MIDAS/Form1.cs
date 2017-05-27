@@ -52,9 +52,9 @@ namespace MIDAS
                     int pointY = Convert.ToInt32(content["pointY"]);
                     Point point = new Point(pointX, pointY);
 
-                    int height = Convert.ToInt32(content["Height"]);
                     int width = Convert.ToInt32(content["Width"]);
-                    Size size = new Size(height, width);
+                    int height = Convert.ToInt32(content["Height"]);
+                    Size size = new Size(width, height);
 
                     ClassGenerate(kind, name, attribute, method, point, size);
                 }
