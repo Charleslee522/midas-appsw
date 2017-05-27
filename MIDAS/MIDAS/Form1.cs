@@ -102,5 +102,25 @@ namespace MIDAS
         {
 
         }
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+            Panel Class = new Panel();
+            TextBox Name = new TextBox();
+            Name.Dock = DockStyle.Top;
+            Name.Text = "1";
+            TextBox Attribute = new TextBox();
+            Attribute.Dock = DockStyle.Fill;
+            Attribute.Text = "1";
+            TextBox Method = new TextBox();
+            Method.Dock = DockStyle.Bottom;
+            Method.Text = "1";
+
+            Class.Controls.Add(Name);
+            Class.Controls.Add(Attribute);
+            Class.Controls.Add(Method);
+
+            RightPanel.Controls.Add(Class);
+        }
     }
 }
