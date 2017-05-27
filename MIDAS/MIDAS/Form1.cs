@@ -155,10 +155,10 @@ namespace MIDAS
         {
             ListView Class = new ListView();
             ListViewGroup GroupName = new ListViewGroup("NameGroup", "Name");
-            Class.Groups.Add(GroupName);
             ListViewGroup GroupAtribute = new ListViewGroup("AtributeGroup", "Atribute");
-            Class.Groups.Add(GroupAtribute);
             ListViewGroup GroupMethod = new ListViewGroup("MethodGroup", "Method");
+            Class.Groups.Add(GroupName);
+            Class.Groups.Add(GroupAtribute);
             Class.Groups.Add(GroupMethod);
 
             Class.Groups.AddRange(new ListViewGroup[] { GroupName, GroupAtribute, GroupMethod });
@@ -174,28 +174,70 @@ namespace MIDAS
             Class.UseCompatibleStateImageBehavior = false;
             Class.View = View.SmallIcon;
             Class.Location = point;
+            Class.MouseDown += new MouseEventHandler(RightClick);
 
             RightPanel.Controls.Add(Class);
         }
 
-        Object Item;
+        void MenuClick(object obj, EventArgs ea)
+        {
 
+            MenuItem mI = (MenuItem)obj;
+            String str = mI.Text;
+            if (str == "Rename")
+            {
+
+            }
+            if (str == "Add Atribute")
+            {
+
+            }
+            if (str == "Add Method")
+            {
+
+            }
+            if (str == "Delete")
+            {
+                target.Dispose();
+            }
+        }
+
+        ListView target;
+        ListViewItem Item;
+
+        void RightClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                target = (ListView)sender;
+
+                EventHandler handler = new EventHandler(MenuClick);
+                MenuItem[] ami = {
+                    new MenuItem("Rename", handler),
+                    new MenuItem("Add Atribute", handler),
+                    new MenuItem("Add Method", handler),
+                    new MenuItem("-", handler),
+                    new MenuItem("Delete", handler),
+                };
+                ContextMenu = new ContextMenu(ami);
+            }
+        }
+        
         private void listView1_ItemDrag(object sender, ItemDragEventArgs e)
         {
+            // 클릭 이벤트로 바꿔 줘야 함
             this.Cursor = Cursors.Hand;
-            Item = e.Item;
-            Console.WriteLine("Mouse Down " + Item);
+            Item = (ListViewItem)e.Item;
         }
 
         private void RightPanel_MouseUp(object sender, MouseEventArgs e)
         {
             this.Cursor = Cursors.Default;
-
+            
             if (Item != null)
             {
                 ClassGenerate(RightPanel.PointToClient(MousePosition));
                 Item = null;
-                Console.WriteLine("Object Create" + Item);
             }
         }
     }
