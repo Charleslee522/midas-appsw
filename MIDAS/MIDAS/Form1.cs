@@ -469,8 +469,6 @@ namespace MIDAS
             String str = mI.Text;
             if (str == "삭제")
                 target.Dispose();
-            
-
         }
         private void groupbox_MouseDown(object sender, MouseEventArgs e)
         {
