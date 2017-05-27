@@ -146,10 +146,10 @@ namespace MIDAS
             Application.Exit();
         }
         
-        private void ClassGenerate(Point point)
+        private void ClassGenerate(Point point, String Kinds)
         {
             GroupBox groupbox = new GroupBox();
-            groupbox.Text = "Class";
+            groupbox.Text = Kinds;
             groupbox.Location = point;
             groupbox.BackColor = Color.White;
             groupbox.Controls.Add(this.splitContainer2);
@@ -158,7 +158,8 @@ namespace MIDAS
             groupbox.MouseMove += new MouseEventHandler(groupbox_MouseMove);
             groupbox.Padding = new Padding(5);
 
-        Label Name = new Label();
+
+            Label Name = new Label();
             Name.Text = "Number_";
             Name.Dock = DockStyle.Top;
             groupbox.Controls.Add(Name);
@@ -184,54 +185,52 @@ namespace MIDAS
             RightPanel.Controls.Add(groupbox);
         }
 
-        void MenuClick(object obj, EventArgs ea)
-        {
+        //void MenuClick(object obj, EventArgs ea)
+        //{
 
-            MenuItem mI = (MenuItem)obj;
-            String str = mI.Text;
+        //    MenuItem mI = (MenuItem)obj;
+        //    String str = mI.Text;
 
-            if (str == "Rename")
-            {
-                InputBox ib = new InputBox(target.Groups[0].Items[0]);
-                ib.Show();
-            }
-            if (str == "Add Attribute")
-            {
-                ListViewItem newItem = new ListViewItem(target.Groups[0]);
-                InputBox ib = new InputBox(newItem);
-                ib.Show();
-            }
-            if (str == "Add Method")
-            {
+        //    if (str == "Rename")
+        //    {
+        //        InputBox ib = new InputBox(target.Groups[0].Items[0]);
+        //        ib.Show();
+        //    }
+        //    if (str == "Add Attribute")
+        //    {
+        //        ListViewItem newItem = new ListViewItem(target.Groups[0]);
+        //        InputBox ib = new InputBox(newItem);
+        //        ib.Show();
+        //    }
+        //    if (str == "Add Method")
+        //    {
 
-            }
-            if (str == "Delete")
-            {
-                target.Dispose();
-            }
-        }
+        //    }
+        //    if (str == "Delete")
+        //    {
+        //        target.Dispose();
+        //    }
+        //}
+        //void RightClick(object sender, MouseEventArgs e)
+        //{
+        //    if (e.Button == MouseButtons.Right)
+        //    {
+        //        target = (ListView)sender;
+
+        //        EventHandler handler = new EventHandler(MenuClick);
+        //        MenuItem[] ami = {
+        //            new MenuItem("Rename", handler),
+        //            new MenuItem("Add Attribute", handler),
+        //            new MenuItem("Add Method", handler),
+        //            new MenuItem("-", handler),
+        //            new MenuItem("Delete", handler),
+        //        };
+        //        ContextMenu = new ContextMenu(ami);
+        //    }
+        //}
         
-        ListView target;
         ListViewItem Item;
 
-        void RightClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                target = (ListView)sender;
-
-                EventHandler handler = new EventHandler(MenuClick);
-                MenuItem[] ami = {
-                    new MenuItem("Rename", handler),
-                    new MenuItem("Add Attribute", handler),
-                    new MenuItem("Add Method", handler),
-                    new MenuItem("-", handler),
-                    new MenuItem("Delete", handler),
-                };
-                ContextMenu = new ContextMenu(ami);
-            }
-        }
-        
         private void listView1_ItemDrag(object sender, ItemDragEventArgs e)
         {
             // 클릭 이벤트로 바꿔 줘야 함
@@ -245,39 +244,60 @@ namespace MIDAS
             
             if (Item != null)
             {
-                ClassGenerate(RightPanel.PointToClient(MousePosition));
+                ClassGenerate(RightPanel.PointToClient(MousePosition), Item.Text);
                 Item = null;
             }
         }
 
-        bool mouseClicked = false;
+
+
+        // 이하 GroupBox Move Resize
+        bool isResize = false;
+        bool isMove = false;
+        Point prevPos;
 
         private void groupbox_MouseDown(object sender, MouseEventArgs e)
         {
             Control temp = (Control)sender;
 
-            Console.WriteLine(temp.Height + " " + e.Y);
-            Console.WriteLine(temp.Width + " " + e.X);
-
             if (temp.Height - 5 <= e.Y && temp.Width - 5 <= e.X)
-                mouseClicked = true;
+            {
+                Cursor = Cursors.SizeNWSE;
+                isResize = true;
+            }
+            else
+            {
+                prevPos = e.Location;
+                Cursor = Cursors.NoMove2D;
+                isMove = true;
+            }
         }
 
         private void groupbox_MouseUp(object sender, MouseEventArgs e)
         {
-            mouseClicked = false;
+            Cursor = Cursors.Default;
+            isResize = false;
+            isMove = false;
         }
 
         private void groupbox_MouseMove(object sender, MouseEventArgs e)
         {
             Control temp = (Control)sender;
 
-            if (mouseClicked)
+            if (isResize)
             {
                 temp.Height = temp.Top + e.Y - temp.Location.Y;
                 temp.Width = temp.Left + e.X - temp.Location.X;
             }
+            if (isMove)
+            {
+                temp.Left = e.X + temp.Left - prevPos.X;
+                temp.Top = e.Y + temp.Top - prevPos.Y;
+            }
         }
+
+
+        // 이하 Lable TextBox
         private void Lable_MouseDoubleDown(object sender, MouseEventArgs e)
         {
             Label Dest = ((Label)sender);
@@ -307,57 +327,5 @@ namespace MIDAS
             if (e.KeyChar == 27)  // esc Key
                 control.Dispose();
         }
-    }
-}
-class InputBox : Form
-{
-    TextBox tb;
-    Label lb;
-    Button yesButton;
-    Button noButton;
-    ListViewItem Item;
-
-    public InputBox(ListViewItem Item)
-    {
-        this.Item = Item;
-        this.Width = 170;
-        this.Height = 95;
-        FormBorderStyle = FormBorderStyle.FixedSingle;
-
-        lb = new Label();
-        lb.Location = new Point(0, 5);
-        lb.Width = 70;
-        lb.TextAlign = ContentAlignment.MiddleCenter;
-        lb.Text = "Name Input";
-
-        tb = new TextBox();
-        tb.Location = new Point(80,5);
-        tb.Width = 70;
-        tb.Text = "내용 입력";
-
-        yesButton = new Button();
-        yesButton.Location = new Point(0, 30);
-        yesButton.Text = "Ok";
-        yesButton.Click += new EventHandler(this.button1_Click);
-
-        noButton = new Button();
-        noButton.Location = new Point(80, 30);
-        noButton.Text = "Cancle";
-        noButton.Click += new EventHandler(this.button2_Click);
-        
-        Controls.Add(lb);
-        Controls.Add(tb);
-        Controls.Add(yesButton);
-        Controls.Add(noButton);
-    }
-    public void button1_Click(object sender, EventArgs e)
-    {
-        Item.Text = tb.Text;
-        this.Dispose();
-    }
-
-    public void button2_Click(object sender, EventArgs e)
-    {
-        this.Dispose();
     }
 }
