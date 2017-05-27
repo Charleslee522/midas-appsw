@@ -7,3 +7,12 @@ c:\users\haro_\documents\visual studio 2015\Projects\MIDAS\MIDAS\obj\Debug\MIDAS
 c:\users\haro_\documents\visual studio 2015\Projects\MIDAS\MIDAS\obj\Debug\MIDAS.csproj.GenerateResource.Cache
 c:\users\haro_\documents\visual studio 2015\Projects\MIDAS\MIDAS\obj\Debug\MIDAS.exe
 c:\users\haro_\documents\visual studio 2015\Projects\MIDAS\MIDAS\obj\Debug\MIDAS.pdb
+C:\Users\CScroll\Documents\GitHub\midas-appsw\MIDAS\MIDAS\bin\Debug\MIDAS.exe.config
+C:\Users\CScroll\Documents\GitHub\midas-appsw\MIDAS\MIDAS\bin\Debug\MIDAS.exe
+C:\Users\CScroll\Documents\GitHub\midas-appsw\MIDAS\MIDAS\bin\Debug\MIDAS.pdb
+C:\Users\CScroll\Documents\GitHub\midas-appsw\MIDAS\MIDAS\obj\Debug\MIDAS.csprojResolveAssemblyReference.cache
+C:\Users\CScroll\Documents\GitHub\midas-appsw\MIDAS\MIDAS\obj\Debug\MIDAS.Form1.resources
+C:\Users\CScroll\Documents\GitHub\midas-appsw\MIDAS\MIDAS\obj\Debug\MIDAS.Properties.Resources.resources
+C:\Users\CScroll\Documents\GitHub\midas-appsw\MIDAS\MIDAS\obj\Debug\MIDAS.csproj.GenerateResource.Cache
+C:\Users\CScroll\Documents\GitHub\midas-appsw\MIDAS\MIDAS\obj\Debug\MIDAS.exe
+C:\Users\CScroll\Documents\GitHub\midas-appsw\MIDAS\MIDAS\obj\Debug\MIDAS.pdb

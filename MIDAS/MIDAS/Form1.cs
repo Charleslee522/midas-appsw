@@ -40,7 +40,10 @@ namespace MIDAS
 
         private void saveAsMenuItem_Click(object sender, EventArgs e)
         {
-
+            SaveFileDialog saveFileDiaglog1 = new SaveFileDialog();
+            saveFileDiaglog1.Filter = "Model Class UML|*.mcu";
+            saveFileDiaglog1.Title = "Save an mcu file";
+            saveFileDiaglog1.ShowDialog();
         }
 
         private void importMenuItem_Click(object sender, EventArgs e)
