@@ -21,6 +21,10 @@ namespace MIDAS
         }
 
         private SaveFile sf = new SaveFile();
+        private HashSet<string> classNameSet = new HashSet<string>();
+        private HashSet<string> interfaceNameSet = new HashSet<string>();
+        int idClassCount = 0;
+        int idInterfaceCount = 0;
 
         private void Changed()
         {
@@ -53,7 +57,11 @@ namespace MIDAS
             }
             else // DialogResult.Cancel
             {
-                // do nothing
+                if (e is CancelEventArgs)
+                {
+                    CancelEventArgs eventArgs = (CancelEventArgs)e;
+                    eventArgs.Cancel = true;
+                }
             }
         }
 
@@ -80,26 +88,51 @@ namespace MIDAS
             openFileDialog1.Title = "Select a mcu file";
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                if (this.sf.isChanged)
+                {
+                    SaveMessagebox(sender, e);
+                }
                 RightPanel.Controls.Clear();
                 System.IO.StreamReader sr = new System.IO.StreamReader(openFileDialog1.FileName);
                 List<Dictionary<string, object>> contentList =
                 JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(sr.ReadToEnd());
 
                 foreach (Dictionary<string, object> content in contentList) {
-                    string kind = Convert.ToString(content["kind"]);
-                    string name = Convert.ToString(content["name"]);
-                    string attribute = Convert.ToString(content["attribute"]);
-                    string method = Convert.ToString(content["method"]);
+                    if(content.ContainsKey("name"))
+                    {
+                        string kind = Convert.ToString(content["kind"]);
+                        string name = Convert.ToString(content["name"]);
+                        string attribute = Convert.ToString(content["attribute"]);
+                        string method = Convert.ToString(content["method"]);
 
-                    int pointX = Convert.ToInt32(content["pointX"]);
-                    int pointY = Convert.ToInt32(content["pointY"]);
-                    Point point = new Point(pointX, pointY);
+                        int pointX = Convert.ToInt32(content["pointX"]);
+                        int pointY = Convert.ToInt32(content["pointY"]);
+                        Point point = new Point(pointX, pointY);
 
-                    int width = Convert.ToInt32(content["Width"]);
-                    int height = Convert.ToInt32(content["Height"]);
-                    Size size = new Size(width, height);
+                        int width = Convert.ToInt32(content["Width"]);
+                        int height = Convert.ToInt32(content["Height"]);
+                        Size size = new Size(width, height);
+                        ClassGenerate(kind, name, attribute, method, point, size);
+                    }
+                }
+                Dictionary<string, Control> controlDic = new Dictionary<string, Control>();
+                foreach (Control control in RightPanel.Controls)
+                {
+                    controlDic.Add(getLabelName(control), control);
+                }
 
-                    ClassGenerate(kind, name, attribute, method, point, size);
+                foreach (Dictionary<string, object> content in contentList)
+                {
+                    if (content.ContainsKey("from"))
+                    {
+                        //"from":"Class_1","to":"Interface_1","kind":1
+                        string from = Convert.ToString(content["from"]);
+                        fromControl.Add(controlDic[from]);
+                        string to = Convert.ToString(content["to"]);
+                        toControl.Add(controlDic[to]);
+                        int kind = Convert.ToInt32(content["kind"]);
+                        lineKinds.Add(kind);
+                    }
                 }
                 sr.Close();
             }
@@ -123,11 +156,28 @@ namespace MIDAS
 
                     saveFile(this.sf.targetFilePath, this.sf.targetFileName);
                 }
+                this.sf.isChanged = false;
             }
             else
             {
                 // do nothing
             }
+        }
+
+        private string getLabelName(Control control)
+        {
+            if (control is GroupBox)
+            {
+                foreach (Control boxControl in control.Controls)
+                {
+                    if (boxControl is Label)
+                    {
+                        Label nameLabel = (Label)boxControl;
+                        return nameLabel.Text;
+                    }
+                }
+            }
+            return "";
         }
 
         private void saveTo(System.IO.FileStream fs)
@@ -170,6 +220,15 @@ namespace MIDAS
                     contentList.Add(content);
                 }
 
+                for (int i = 0; i < fromControl.Count && i < toControl.Count; i++)
+                {
+                    Dictionary<string, object> lineContent = new Dictionary<string, object>();
+                    lineContent.Add("from", getLabelName(fromControl[i]));
+                    lineContent.Add("to", getLabelName(toControl[i]));
+                    lineContent.Add("kind", lineKinds[i]);
+                    contentList.Add(lineContent);
+                }
+
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.Serialize(file, contentList);
                 file.Close();
@@ -206,6 +265,13 @@ namespace MIDAS
                 }
 
                 saveFile(saveFileDiaglog1.FileName, Path.GetFileName(saveFileDiaglog1.FileName));
+            } else
+            {
+                if (e is CancelEventArgs)
+                {
+                    CancelEventArgs eventArgs = (CancelEventArgs)e;
+                    eventArgs.Cancel = true;
+                }
             }
 
         }
@@ -233,20 +299,30 @@ namespace MIDAS
                     using (Bitmap bitmap = new Bitmap(RightPanel.ClientSize.Width, RightPanel.ClientSize.Height))
                     {
                         RightPanel.DrawToBitmap(bitmap, RightPanel.ClientRectangle);
+                        using (var graphics = Graphics.FromImage(bitmap)) {
+                            DrawLine(graphics);
+                        }
+                        foreach (Control control in RightPanel.Controls)
+                        {
+                            if(control is GroupBox)
+                            {
+                                GroupBox groupBox = (GroupBox)control;
+                                Rectangle rac = new Rectangle(groupBox.Bounds.X, groupBox.Bounds.Y, groupBox.Width, groupBox.Height);
+                                groupBox.DrawToBitmap(bitmap, rac);
+                            }
+                        }
+
                         switch (exportImageDialog.FilterIndex)
                         {
                             case 1:
                                 bitmap.Save(fs, System.Drawing.Imaging.ImageFormat.Jpeg);
                                 break;
-
                             case 2:
                                 bitmap.Save(fs, System.Drawing.Imaging.ImageFormat.Bmp);
                                 break;
-
                             case 3:
                                 bitmap.Save(fs, System.Drawing.Imaging.ImageFormat.Gif);
                                 break;
-
                             case 4:
                                 bitmap.Save(fs, System.Drawing.Imaging.ImageFormat.Png);
                                 break;
@@ -279,6 +355,12 @@ namespace MIDAS
 
         private void ClassGenerate(string Kinds, string name, string attribute, string method, Point point, Size size)
         {
+
+            if(! classNameSet.Add(name))
+            {
+                //error!
+            }
+
             SplitContainer splitContainer2 = new SplitContainer();
             GroupBox groupbox = new GroupBox();
             groupbox.Text = Kinds;
@@ -318,6 +400,38 @@ namespace MIDAS
             RightPanel.Controls.Add(groupbox);
         }
         
+        private string getUniqueName(String Kinds)
+        {
+            string uniqueName = "";
+
+            if(Kinds == "Class")
+            {
+                uniqueName = Kinds + "_" + this.idClassCount.ToString();
+                while (!classNameSet.Add(uniqueName))
+                {
+                    this.idClassCount++;
+                    uniqueName = Kinds + "_" + this.idClassCount.ToString();
+                }
+                this.idClassCount++;
+            }
+            else if (Kinds == "Interface")
+            {
+                uniqueName = Kinds + "_" + this.idInterfaceCount.ToString();
+                while (!interfaceNameSet.Add(uniqueName))
+                {
+                    this.idInterfaceCount++;
+                    uniqueName = Kinds + "_" + this.idInterfaceCount.ToString();
+                }
+                this.idInterfaceCount++;
+            }
+            else
+            {
+                // do nothing
+            }
+
+            return uniqueName;
+        }
+
         private void ClassGenerate(Point point, String Kinds)
         {
             SplitContainer splitContainer2 = new SplitContainer();
@@ -332,7 +446,9 @@ namespace MIDAS
             groupbox.MouseMove += new MouseEventHandler(groupbox_MouseMove);
 
             Label Name = new Label();
-            Name.Text = "Number_";
+            
+            Name.Text = getUniqueName(Kinds);
+            
             Name.Dock = DockStyle.Top;
             Name.MouseDoubleClick += new MouseEventHandler(Lable_MouseDoubleDown);
             groupbox.Controls.Add(Name);
@@ -391,15 +507,6 @@ namespace MIDAS
 
         private void listView1_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            //// 클릭 이벤트로 바꿔 줘야 함
-            //this.Cursor = Cursors.Hand;
-            //Item = (ListViewItem)e.Item;
-            //if (Item.Text == "Line")
-            //{
-            //    isLine = true;
-            //    Item = null;
-            //    //Console.WriteLine(Item.Text);
-            //}
         }
 
         private void RightPanel_MouseUp(object sender, MouseEventArgs e)
@@ -586,7 +693,7 @@ namespace MIDAS
                 {
                     using (FileStream fs = new FileStream(this.sf.targetFilePath, FileMode.Create))
                     {
-                        saveTo(fs);
+                        SaveMessagebox(sender, e);
                         fs.Close();
                     }
 
@@ -599,10 +706,9 @@ namespace MIDAS
             }
         }
 
-        private void DrawLine()
+
+        private Graphics DrawLine(Graphics graphic)
         {
-            Graphics graphic = RightPanel.CreateGraphics();
-            graphic.Clear(RightPanel.BackColor);
             Pen pen = new Pen(Color.Black, 3);
             AdjustableArrowCap cusCap = new AdjustableArrowCap(6,6);
             pen.EndCap = LineCap.Custom;
@@ -615,8 +721,7 @@ namespace MIDAS
                     pen.DashStyle = DashStyle.Solid;
                     cusCap.Filled = true;
                 }
-                else if (lineKinds[i] == 1)
-                {
+                else if (lineKinds[i] == 1) { 
                     pen.DashStyle = DashStyle.Dash;
                     cusCap.Filled = true;
                 }
@@ -659,7 +764,7 @@ namespace MIDAS
                         graphic.DrawLine(pen, p1, new Point(p2.X, toControl[i].Top));
                         continue;
                     }
-                    if(fromControl[i].Left > toControl[i].Right)
+                    if (fromControl[i].Left > toControl[i].Right)
                     {
                         graphic.DrawLine(pen, p1, new Point(toControl[i].Right, p2.Y));
                         continue;
@@ -680,6 +785,14 @@ namespace MIDAS
                     }
                 }
             }
+            return graphic;
+        }
+
+        private void DrawLine()
+        {
+            Graphics graphic = RightPanel.CreateGraphics();
+            graphic.Clear(RightPanel.BackColor);
+            DrawLine(graphic);
         }
 
         private void listView1_MouseUp(object sender, MouseEventArgs e)
