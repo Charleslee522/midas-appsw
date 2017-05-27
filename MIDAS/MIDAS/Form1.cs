@@ -685,20 +685,8 @@ namespace MIDAS
         {
             if (this.sf.isChanged)
             {
-                if (String.IsNullOrWhiteSpace(this.sf.targetFileName))
-                {
-                    saveAsMenuItem_Click(sender, e);
-                }
-                else
-                {
-                    using (FileStream fs = new FileStream(this.sf.targetFilePath, FileMode.Create))
-                    {
-                        SaveMessagebox(sender, e);
-                        fs.Close();
-                    }
-
-                    saveFile(this.sf.targetFilePath, this.sf.targetFileName);
-                }
+                SaveMessagebox(sender, e);
+                saveFile(this.sf.targetFilePath, this.sf.targetFileName);
             }
             else
             {
