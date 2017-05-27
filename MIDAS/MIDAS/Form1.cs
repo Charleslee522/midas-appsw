@@ -483,15 +483,12 @@ namespace MIDAS
                 temp.Left = e.X + temp.Left - prevPos.X;
                 temp.Top = e.Y + temp.Top - prevPos.Y;
             }
-<<<<<<< HEAD
-            BasicDrawLine();
-=======
+
             if(isResize || isMove)
             {
                 Changed();
             }
             DrawLine();
->>>>>>> 60d5f7acc6e291632fbba5780b74a10b58b3049d
         }
         
         // 이하 Lable TextBox
@@ -525,8 +522,7 @@ namespace MIDAS
             if (e.KeyChar == 27)  // esc Key
                 control.Dispose();
         }
-
-<<<<<<< HEAD
+        
         private void BasicDrawLine()
         {
             Graphics graphic = RightPanel.CreateGraphics();
@@ -555,9 +551,7 @@ namespace MIDAS
                     graphic.DrawLine(pen, p1, p2);
             }
         }
-
-        private void DependencyDrawLine()
-=======
+        
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (this.sf.isChanged)
@@ -584,7 +578,6 @@ namespace MIDAS
         }
 
         private void DrawLine()
->>>>>>> 60d5f7acc6e291632fbba5780b74a10b58b3049d
         {
             Graphics graphic = RightPanel.CreateGraphics();
             graphic.Clear(RightPanel.BackColor);
