@@ -94,6 +94,10 @@ namespace MIDAS
             openFileDialog1.Title = "Select a mcu file";
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                if (this.sf.isChanged)
+                {
+                    SaveMessagebox(sender, e);
+                }
                 RightPanel.Controls.Clear();
                 System.IO.StreamReader sr = new System.IO.StreamReader(openFileDialog1.FileName);
                 List<Dictionary<string, object>> contentList =
@@ -158,6 +162,7 @@ namespace MIDAS
 
                     saveFile(this.sf.targetFilePath, this.sf.targetFileName);
                 }
+                this.sf.isChanged = false;
             }
             else
             {
