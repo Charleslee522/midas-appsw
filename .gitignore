@@ -1,4 +1,3 @@
-
-MIDAS/.vs/*
-MIDAS/MIDAS/bin/*
-MIDAS/MIDAS/obj/*
+MIDAS/.vs/
+MIDAS/MIDAS/bin/
+MIDAS/MIDAS/obj/
