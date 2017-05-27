@@ -31,13 +31,17 @@
             System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Class", System.Windows.Forms.HorizontalAlignment.Center);
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Line", System.Windows.Forms.HorizontalAlignment.Center);
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Class"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
+            "Association"}, -1, System.Drawing.Color.Empty, System.Drawing.Color.White, null);
             System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Implement"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
+            "Class"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
             System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Interface"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
+            "Dependency"}, -1, System.Drawing.Color.Empty, System.Drawing.Color.White, null);
             System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Line"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
+            "Generalization"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
+            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
+            "Interface"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
+            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem(new string[] {
+            "Realization"}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Control, null);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -200,7 +204,7 @@
             this.ParentWindow.Panel2.BackColor = System.Drawing.SystemColors.ControlDark;
             this.ParentWindow.Panel2.Controls.Add(this.RightPanel);
             this.ParentWindow.Size = new System.Drawing.Size(688, 288);
-            this.ParentWindow.SplitterDistance = 228;
+            this.ParentWindow.SplitterDistance = 189;
             this.ParentWindow.TabIndex = 2;
             // 
             // LeftWindow
@@ -218,14 +222,14 @@
             // LeftWindow.Panel2
             // 
             this.LeftWindow.Panel2.Controls.Add(this.listView1);
-            this.LeftWindow.Size = new System.Drawing.Size(228, 288);
+            this.LeftWindow.Size = new System.Drawing.Size(189, 288);
             this.LeftWindow.SplitterDistance = 82;
             this.LeftWindow.TabIndex = 0;
             // 
             // listView1
             // 
             this.listView1.Activation = System.Windows.Forms.ItemActivation.OneClick;
-            this.listView1.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.listView1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(255)))), ((int)(((byte)(84)))));
             this.listView1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             listViewGroup1.Header = "Class";
@@ -237,22 +241,27 @@
             this.listView1.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2});
-            listViewItem1.Group = listViewGroup1;
-            listViewItem1.StateImageIndex = 0;
-            listViewItem2.Group = listViewGroup2;
-            listViewItem3.Group = listViewGroup1;
-            listViewItem3.StateImageIndex = 0;
+            listViewItem1.Group = listViewGroup2;
+            listViewItem2.Group = listViewGroup1;
+            listViewItem2.StateImageIndex = 0;
+            listViewItem3.Group = listViewGroup2;
             listViewItem4.Group = listViewGroup2;
             listViewItem4.StateImageIndex = 0;
+            listViewItem5.Group = listViewGroup1;
+            listViewItem5.StateImageIndex = 0;
+            listViewItem6.Group = listViewGroup2;
+            listViewItem6.StateImageIndex = 0;
             this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem1,
             listViewItem2,
             listViewItem3,
-            listViewItem4});
+            listViewItem4,
+            listViewItem5,
+            listViewItem6});
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
             this.listView1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.listView1.Size = new System.Drawing.Size(226, 200);
+            this.listView1.Size = new System.Drawing.Size(187, 200);
             this.listView1.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listView1.TabIndex = 0;
             this.listView1.TileSize = new System.Drawing.Size(200, 28);
@@ -264,10 +273,11 @@
             // 
             // RightPanel
             // 
+            this.RightPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(104)))), ((int)(((byte)(63)))));
             this.RightPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.RightPanel.Location = new System.Drawing.Point(0, 0);
             this.RightPanel.Name = "RightPanel";
-            this.RightPanel.Size = new System.Drawing.Size(454, 286);
+            this.RightPanel.Size = new System.Drawing.Size(493, 286);
             this.RightPanel.TabIndex = 0;
             this.RightPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.RightPanel_MouseUp);
             // 
@@ -302,6 +312,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Form1";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.menuStrip1.ResumeLayout(false);

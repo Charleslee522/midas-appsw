@@ -8,7 +8,6 @@ using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;  // Console
 using Newtonsoft.Json;
 using System.Drawing.Drawing2D;
 
@@ -19,12 +18,7 @@ namespace MIDAS
         public Form1()
         {
             InitializeComponent();
-            AllocConsole();  // Console
         }
-
-        [DllImport("kernel32.dll", SetLastError = true)]  // Console
-        [return: MarshalAs(UnmanagedType.Bool)]  // Console
-        static extern bool AllocConsole();  // Console
 
         private SaveFile sf = new SaveFile();
 
@@ -376,13 +370,21 @@ namespace MIDAS
             {
                 isLine = true;
 
-                if (Item.Text == "Line")
+                if (Item.Text == "Generalization")
                 {
                     lineKinds.Add(0);
                 }
-                if (Item.Text == "Implement")
+                if (Item.Text == "Realization")
                 {
                     lineKinds.Add(1);
+                }
+                if (Item.Text == "Association")
+                {
+                    lineKinds.Add(2);
+                }
+                if (Item.Text == "Dependency")
+                {
+                    lineKinds.Add(3);
                 }
             }
         }
@@ -426,6 +428,7 @@ namespace MIDAS
                 {
                     ClassGenerate(RightPanel.PointToClient(MousePosition), Item.Text);
                     Changed();
+                    Item.Selected = false;
                     Item = null;
                 }
             }
@@ -458,34 +461,56 @@ namespace MIDAS
                 prevControl = sender;
             }
         }
-        
+
+        Control target;
+        void MenuClick(object obj, EventArgs ea)
+        {
+            MenuItem mI = (MenuItem)obj;
+            String str = mI.Text;
+            if (str == "삭제")
+                target.Dispose();
+            
+
+        }
         private void groupbox_MouseDown(object sender, MouseEventArgs e)
         {
-            Control temp = (Control)sender;
-            colorChange(temp);
+            if (e.Button == MouseButtons.Right)
+            {
+                target = (Control)sender;
+                EventHandler eh = new EventHandler(MenuClick);
+                MenuItem[] ami = {
+                    new MenuItem("삭제",eh)
+                };
+                ContextMenu = new ContextMenu(ami);
+            }
+            else if (e.Button == MouseButtons.Left)
+            {
+                Control temp = (Control)sender;
+                colorChange(temp);
 
-            if (isLine)
-            {
-                if (toControl.Count == fromControl.Count)
+                if (isLine)
                 {
-                    fromControl.Add(temp);
+                    if (toControl.Count == fromControl.Count)
+                    {
+                        fromControl.Add(temp);
+                    }
+                    else if (toControl.Count < fromControl.Count)
+                    {
+                        toControl.Add(temp);
+                        isLine = false;
+                    }
                 }
-                else if (toControl.Count < fromControl.Count)
+                if (temp.Height - 5 <= e.Y && temp.Width - 5 <= e.X)
                 {
-                    toControl.Add(temp);
-                    isLine = false;
+                    Cursor = Cursors.SizeNWSE;
+                    isResize = true;
                 }
-            }
-            if (temp.Height - 5 <= e.Y && temp.Width - 5 <= e.X)
-            {
-                Cursor = Cursors.SizeNWSE;
-                isResize = true;
-            }
-            else
-            {
-                prevPos = e.Location;
-                Cursor = Cursors.NoMove2D;
-                isMove = true;
+                else
+                {
+                    prevPos = e.Location;
+                    Cursor = Cursors.NoMove2D;
+                    isMove = true;
+                }
             }
         }
 
@@ -580,24 +605,40 @@ namespace MIDAS
         {
             Graphics graphic = RightPanel.CreateGraphics();
             graphic.Clear(RightPanel.BackColor);
-            Pen pen = new Pen(Color.Black,5);
-            pen.EndCap = LineCap.Flat;
-            pen.DashStyle = DashStyle.Solid;
-            //pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+            Pen pen = new Pen(Color.Black, 3);
+            AdjustableArrowCap cusCap = new AdjustableArrowCap(6,6);
+            pen.EndCap = LineCap.Custom;
             Point p1, p2;
 
             for (int i = 0; i < fromControl.Count && i < toControl.Count; i++)
             {
-                if(lineKinds[i]==0)
+                if (lineKinds[i] == 0)
+                {
                     pen.DashStyle = DashStyle.Solid;
-                else if(lineKinds[i] == 1)
+                    cusCap.Filled = true;
+                }
+                else if (lineKinds[i] == 1)
+                {
                     pen.DashStyle = DashStyle.Dash;
+                    cusCap.Filled = true;
+                }
+                else if (lineKinds[i] == 2)
+                {
+                    pen.DashStyle = DashStyle.Solid;
+                    cusCap.Filled = false;
+                }
+                else if (lineKinds[i] == 3)
+                {
+                    pen.DashStyle = DashStyle.Dash;
+                    cusCap.Filled = false;
+                }
 
                 p1 = new Point(fromControl[i].Left + fromControl[i].Width / 2, fromControl[i].Top + fromControl[i].Height / 2);
                 p2 = new Point(toControl[i].Left + toControl[i].Width / 2, toControl[i].Top + toControl[i].Height / 2);
 
                 if (fromControl[i] == toControl[i])
                 {
+                    pen.EndCap = LineCap.Flat;
                     graphic.DrawLine(pen, p1, new Point(fromControl[i].Right + 30, p2.Y));
 
                     graphic.DrawLine(pen, new Point(fromControl[i].Right + 30, p2.Y),
@@ -606,13 +647,14 @@ namespace MIDAS
                     graphic.DrawLine(pen, new Point(fromControl[i].Right + 30, fromControl[i].Top - 30),
                         new Point(p1.X, fromControl[i].Top - 30));
 
-                    pen.EndCap = LineCap.ArrowAnchor;
+                    pen.EndCap = LineCap.Custom;
+                    pen.CustomEndCap = cusCap;
                     graphic.DrawLine(pen, new Point(p1.X, fromControl[i].Top - 30),
                         new Point(p1.X, fromControl[i].Top));
                 }
                 else
                 {
-                    pen.EndCap = LineCap.ArrowAnchor;
+                    pen.CustomEndCap = cusCap;
 
                     if (fromControl[i].Top < toControl[i].Bottom)
                     {
