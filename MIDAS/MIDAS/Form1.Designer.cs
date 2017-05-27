@@ -54,7 +54,9 @@
             this.LeftWindow = new System.Windows.Forms.SplitContainer();
             this.listView1 = new System.Windows.Forms.ListView();
             this.RightPanel = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.splitter1 = new System.Windows.Forms.Splitter();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ParentWindow)).BeginInit();
             this.ParentWindow.Panel1.SuspendLayout();
@@ -63,7 +65,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.LeftWindow)).BeginInit();
             this.LeftWindow.Panel2.SuspendLayout();
             this.LeftWindow.SuspendLayout();
-            this.RightPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -252,7 +257,6 @@
             // 
             // RightPanel
             // 
-            this.RightPanel.Controls.Add(this.button1);
             this.RightPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.RightPanel.Location = new System.Drawing.Point(0, 0);
             this.RightPanel.Name = "RightPanel";
@@ -260,15 +264,27 @@
             this.RightPanel.TabIndex = 0;
             this.RightPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.RightPanel_MouseUp);
             // 
-            // button1
+            // splitter1
             // 
-            this.button1.Location = new System.Drawing.Point(314, 165);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.splitter1.Location = new System.Drawing.Point(0, 0);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(3, 3);
+            this.splitter1.TabIndex = 0;
+            this.splitter1.TabStop = false;
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Size = new System.Drawing.Size(150, 100);
+            this.splitContainer1.TabIndex = 0;
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Size = new System.Drawing.Size(150, 100);
+            this.splitContainer2.TabIndex = 0;
             // 
             // Form1
             // 
@@ -289,7 +305,10 @@
             this.LeftWindow.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.LeftWindow)).EndInit();
             this.LeftWindow.ResumeLayout(false);
-            this.RightPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -309,13 +328,15 @@
         private System.Windows.Forms.SplitContainer LeftWindow;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.Panel RightPanel;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ToolStripMenuItem OpenRecentMenuItem;
         private System.Windows.Forms.ToolStripSeparator SaveBeginSeparator;
         private System.Windows.Forms.ToolStripMenuItem SaveAllMenuItem;
         private System.Windows.Forms.ToolStripSeparator SaveEndSeparator;
         private System.Windows.Forms.ToolStripSeparator CloseSeparator;
         private System.Windows.Forms.ToolStripMenuItem CloseMenuItem;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Splitter splitter1;
+        private System.Windows.Forms.SplitContainer splitContainer2;
     }
 }
 

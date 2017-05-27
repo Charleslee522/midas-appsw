@@ -141,11 +141,6 @@ namespace MIDAS
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Console.WriteLine("클릭!!");
-        }
-
         private void CloseMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
@@ -153,32 +148,31 @@ namespace MIDAS
         
         private void ClassGenerate(Point point)
         {
-            ListView Class = new ListView();
-            ListViewGroup GroupName = new ListViewGroup("NameGroup", "Name");
-            ListViewGroup GroupAtribute = new ListViewGroup("AtributeGroup", "Atribute");
-            ListViewGroup GroupMethod = new ListViewGroup("MethodGroup", "Method");
-            Class.Groups.Add(GroupName);
-            Class.Groups.Add(GroupAtribute);
-            Class.Groups.Add(GroupMethod);
+            GroupBox groupbox = new GroupBox();
+            groupbox.Text = "Class";
+            groupbox.BackColor = Color.LightGreen;
+            groupbox.Controls.Add(this.splitContainer2);
 
-            Class.Groups.AddRange(new ListViewGroup[] { GroupName, GroupAtribute, GroupMethod });
-            ListViewItem ItemName = new ListViewItem(GroupName);
-            ItemName.Text = "Class_"+(listCount+1);
-            listCount++;
-            ListViewItem ItemAtribute = new ListViewItem(GroupAtribute);
-            ListViewItem ItemMethod = new ListViewItem(GroupMethod);
+            splitContainer2.Dock = DockStyle.Fill;
+            splitContainer2.Location = new Point(3, 17);
+            splitContainer2.Name = "splitContainer2";
+            splitContainer2.Orientation = Orientation.Horizontal;
+            splitContainer2.BorderStyle = BorderStyle.Fixed3D;
+            splitContainer2.TabIndex = 0;
+            
+            Label Atribute = new Label();
+            Atribute.Text = "Atribute";
+            Atribute.Dock = DockStyle.Fill;
+            Atribute.MouseDoubleClick += new MouseEventHandler(Lable_MouseDoubleDown);
+            splitContainer2.Panel1.Controls.Add(Atribute);
 
-            Class.Items.AddRange(new ListViewItem[] { ItemName, ItemAtribute, ItemMethod });
-            Class.Location = new Point(67, 74);
-            Class.Name = "NewClass";
-            Class.Size = new Size(154, 131);
-            Class.TabIndex = 1;
-            Class.UseCompatibleStateImageBehavior = false;
-            Class.View = View.SmallIcon;
-            Class.Location = point;
-            Class.MouseDown += new MouseEventHandler(RightClick);
+            Label Method = new Label();
+            Method.Text = "Method";
+            Method.Dock = DockStyle.Fill;
+            Method.MouseDoubleClick += new MouseEventHandler(Lable_MouseDoubleDown);
+            splitContainer2.Panel2.Controls.Add(Method);
 
-            RightPanel.Controls.Add(Class);
+            RightPanel.Controls.Add(groupbox);
         }
 
         void MenuClick(object obj, EventArgs ea)
@@ -207,8 +201,7 @@ namespace MIDAS
                 target.Dispose();
             }
         }
-
-        int listCount;
+        
         ListView target;
         ListViewItem Item;
 
@@ -246,6 +239,34 @@ namespace MIDAS
                 ClassGenerate(RightPanel.PointToClient(MousePosition));
                 Item = null;
             }
+        }
+        
+        private void Lable_MouseDoubleDown(object sender, MouseEventArgs e)
+        {
+            Label Dest = ((Label)sender);
+            TextBox tempBox = new TextBox();
+
+            tempBox.Multiline = true;
+            tempBox.Dock = DockStyle.Fill;
+            tempBox.Text = Dest.Text;
+            tempBox.KeyPress += new KeyPressEventHandler(OutKey);
+            tempBox.Leave += new EventHandler(lostFocus);
+
+            Dest.Controls.Add(tempBox);
+        }
+        private void lostFocus(object sender, EventArgs e)
+        {
+            Control control = (Control)sender;
+            control.Parent.Text = control.Text;
+            control.Dispose();
+        }
+
+        private void OutKey(object sender, KeyPressEventArgs e)
+        {
+            Control control = (Control)sender;
+            control.Parent.Text = control.Text;
+            if (e.KeyChar == 27)  // esc Key
+                control.Dispose();
         }
     }
 }
