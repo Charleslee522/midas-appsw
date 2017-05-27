@@ -25,3 +25,5 @@ C:\Users\haro_\Documents\midas-appsw\MIDAS\MIDAS\obj\Debug\MIDAS.csprojResolveAs
 C:\Users\haro_\Documents\midas-appsw\MIDAS\MIDAS\obj\Debug\MIDAS.Form1.resources
 C:\Users\haro_\Documents\midas-appsw\MIDAS\MIDAS\obj\Debug\MIDAS.Properties.Resources.resources
 C:\Users\haro_\Documents\midas-appsw\MIDAS\MIDAS\obj\Debug\MIDAS.csproj.GenerateResource.Cache
+C:\Users\CScroll\Documents\GitHub\midas-appsw\MIDAS\MIDAS\bin\Debug\Newtonsoft.Json.dll
+C:\Users\CScroll\Documents\GitHub\midas-appsw\MIDAS\MIDAS\bin\Debug\Newtonsoft.Json.xml

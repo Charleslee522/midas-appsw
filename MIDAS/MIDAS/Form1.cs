@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;  // Console
+using Newtonsoft.Json;
 
 namespace MIDAS
 {
@@ -37,7 +38,15 @@ namespace MIDAS
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 System.IO.StreamReader sr = new System.IO.StreamReader(openFileDialog1.FileName);
-                MessageBox.Show(sr.ReadToEnd());
+                Dictionary<string, object> content =
+                JsonConvert.DeserializeObject<Dictionary<string, object>>(sr.ReadToEnd());
+                int pointX = Convert.ToInt32(content["pointX"]);
+                int pointY = Convert.ToInt32(content["pointY"]);
+                int height = Convert.ToInt32(content["Height"]);
+                int width = Convert.ToInt32(content["Width"]);
+                string attribute = Convert.ToString(content["attribute"]);
+                string method = Convert.ToString(content["method"]);
+                string name = Convert.ToString(content["name"]);
                 sr.Close();
             }
         }
@@ -53,7 +62,8 @@ namespace MIDAS
             saveFileDiaglog1.Filter = "Model Class UML|*.mcu";
             saveFileDiaglog1.Title = "Save a mcu file";
 
-            if(saveFileDiaglog1.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+            if (saveFileDiaglog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
 
                 if (saveFileDiaglog1.FileName != "")
                 {
@@ -65,7 +75,40 @@ namespace MIDAS
                             if (fs.CanWrite)
                             {
                                 System.IO.StreamWriter file = new System.IO.StreamWriter(fs);
-                                file.WriteLine("Hello World!");
+                                Dictionary<string, object> content = new Dictionary<string, object>();
+                                foreach (Control panelControl in RightPanel.Controls)
+                                {
+                                    GroupBox box = (GroupBox)panelControl;
+                                    content.Add("pointX", box.Location.X);
+                                    content.Add("pointY", box.Location.Y);
+                                    content.Add("Height", box.Size.Height);
+                                    content.Add("Width", box.Size.Width);
+                                    foreach (Control boxControl in box.Controls)
+                                    {
+                                        if (boxControl is SplitContainer)
+                                        {
+                                            SplitContainer sc = (SplitContainer)boxControl;
+                                            foreach (Control attControl in sc.Panel1.Controls)
+                                            {
+                                                Label attLabel = (Label)attControl;
+                                                content.Add("attribute", attLabel.Text);
+                                            }
+                                            foreach (Control methodControl in sc.Panel2.Controls)
+                                            {
+                                                Label methodLabel = (Label)methodControl;
+                                                content.Add("method", methodLabel.Text);
+                                            }
+                                        }
+                                        else if (boxControl is Label)
+                                        {
+                                            Label nameLabel = (Label)boxControl;
+                                            content.Add("name", nameLabel.Text);
+                                        }
+                                    }
+                                }
+
+                                JsonSerializer serializer = new JsonSerializer();
+                                serializer.Serialize(file, content);
                                 file.Close();
                             }
                             break;
