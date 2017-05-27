@@ -24,43 +24,57 @@ namespace MIDAS
         [DllImport("kernel32.dll", SetLastError = true)]  // Console
         [return: MarshalAs(UnmanagedType.Bool)]  // Console
         static extern bool AllocConsole();  // Console
-         
-        private string targetFileName = "";
 
-        private void saveFile(string fileName)
+        private SaveFile sf = new SaveFile();
+
+        private void Changed()
         {
-            this.targetFileName = fileName;
+            this.sf.isChanged = true;
+            this.Text = "Midas UML -- * " + this.sf.targetFileName;
+        }
+        private void saveFile(string filePath, string fileName)
+        {
+            this.sf.targetFileName = fileName;
+            this.sf.targetFilePath = filePath;
             this.Text = "MIDAS UML -- " + fileName;
+        }
+
+        private void SaveMessagebox(object sender, EventArgs e)
+        {
+            const string message = "Do you want to save the changes you made?";
+            const string caption = "Save Changes";
+            DialogResult result = MessageBox.Show(message, caption,
+                                         MessageBoxButtons.YesNoCancel,
+                                         MessageBoxIcon.Question);
+            if (result == DialogResult.No)
+            {
+                RightPanel.Controls.Clear();
+                this.sf.targetFileName = "";
+                this.sf.targetFilePath = "";
+            }
+            else if (result == DialogResult.Yes)
+            {
+                saveMenuItem_Click(sender, e);
+            }
+            else // DialogResult.Cancel
+            {
+                // do nothing
+            }
         }
 
         private void newMenuItem_Click(object sender, EventArgs e)
         {
-            if(String.IsNullOrWhiteSpace(targetFileName))
+            if (this.sf.isChanged)
             {
-
+                SaveMessagebox(sender, e);
             }
             else
             {
-                const string message = "Do you want to save the changes you made?";
-                const string caption = "Save Changes";
-                DialogResult result = MessageBox.Show(message, caption,
-                                             MessageBoxButtons.YesNoCancel,
-                                             MessageBoxIcon.Question);
-
-                if (result == DialogResult.No)
-                {
-                    RightPanel.Controls.Clear();
-                    targetFileName = "";
-                }
-                else if(result == DialogResult.Yes)
-                {
-                    saveMenuItem_Click(sender, e);
-                }
-                else // DialogResult.Cancel
-                {
-                    // do nothing
-                }
+                RightPanel.Controls.Clear();
+                this.sf.targetFileName = "";
+                this.sf.targetFilePath = "";
             }
+
         }
 
         private void openMenuItem_Click(object sender, EventArgs e)
@@ -98,9 +112,73 @@ namespace MIDAS
 
         private void saveMenuItem_Click(object sender, EventArgs e)
         {
-            if(!String.IsNullOrWhiteSpace(targetFileName))
+            if(this.sf.isChanged)
             {
-                saveAsMenuItem_Click(sender, e);
+                if (String.IsNullOrWhiteSpace(this.sf.targetFileName))
+                {
+                    saveAsMenuItem_Click(sender, e);
+                }
+                else
+                {
+                    using (FileStream fs = new FileStream(this.sf.targetFilePath, FileMode.Create))
+                    {
+                        saveTo(fs);
+                        fs.Close();
+                    }
+
+                    saveFile(this.sf.targetFilePath, this.sf.targetFileName);
+                }
+            }
+            else
+            {
+                // do nothing
+            }
+        }
+
+        private void saveTo(System.IO.FileStream fs)
+        {
+            if (fs.CanWrite)
+            {
+                System.IO.StreamWriter file = new System.IO.StreamWriter(fs);
+                List<Dictionary<string, object>> contentList = new List<Dictionary<string, object>>();
+                foreach (Control panelControl in RightPanel.Controls)
+                {
+                    Dictionary<string, object> content = new Dictionary<string, object>();
+                    GroupBox box = (GroupBox)panelControl;
+                    content.Add("kind", box.Text);
+                    content.Add("pointX", box.Location.X);
+                    content.Add("pointY", box.Location.Y);
+                    content.Add("Height", box.Size.Height);
+                    content.Add("Width", box.Size.Width);
+                    foreach (Control boxControl in box.Controls)
+                    {
+                        if (boxControl is SplitContainer)
+                        {
+                            SplitContainer sc = (SplitContainer)boxControl;
+                            foreach (Control attControl in sc.Panel1.Controls)
+                            {
+                                Label attLabel = (Label)attControl;
+                                content.Add("attribute", attLabel.Text);
+                            }
+                            foreach (Control methodControl in sc.Panel2.Controls)
+                            {
+                                Label methodLabel = (Label)methodControl;
+                                content.Add("method", methodLabel.Text);
+                            }
+                        }
+                        else if (boxControl is Label)
+                        {
+                            Label nameLabel = (Label)boxControl;
+                            content.Add("name", nameLabel.Text);
+                        }
+                    }
+                    contentList.Add(content);
+                }
+
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, contentList);
+                file.Close();
+                contentList.Clear();
             }
         }
 
@@ -114,68 +192,31 @@ namespace MIDAS
             {
                 if (! String.IsNullOrWhiteSpace(saveFileDiaglog1.FileName))
                 {
-                    System.IO.FileStream fs = (System.IO.FileStream)saveFileDiaglog1.OpenFile();
-                    switch (saveFileDiaglog1.FilterIndex)
+                    using (System.IO.FileStream fs = (System.IO.FileStream)saveFileDiaglog1.OpenFile())
                     {
-                        case 1:
-                            if (fs.CanWrite)
-                            {
-                                System.IO.StreamWriter file = new System.IO.StreamWriter(fs);
-                                List<Dictionary<string, object>> contentList = new List<Dictionary<string, object>>();
-                                foreach (Control panelControl in RightPanel.Controls)
+                        switch (saveFileDiaglog1.FilterIndex)
+                        {
+                            case 1:
+                                if (fs.CanWrite)
                                 {
-                                    Dictionary<string, object> content = new Dictionary<string, object>();
-                                    GroupBox box = (GroupBox)panelControl;
-                                    content.Add("kind", box.Text);
-                                    content.Add("pointX", box.Location.X);
-                                    content.Add("pointY", box.Location.Y);
-                                    content.Add("Height", box.Size.Height);
-                                    content.Add("Width", box.Size.Width);
-                                    foreach (Control boxControl in box.Controls)
-                                    {
-                                        if (boxControl is SplitContainer)
-                                        {
-                                            SplitContainer sc = (SplitContainer)boxControl;
-                                            foreach (Control attControl in sc.Panel1.Controls)
-                                            {
-                                                Label attLabel = (Label)attControl;
-                                                content.Add("attribute", attLabel.Text);
-                                            }
-                                            foreach (Control methodControl in sc.Panel2.Controls)
-                                            {
-                                                Label methodLabel = (Label)methodControl;
-                                                content.Add("method", methodLabel.Text);
-                                            }
-                                        }
-                                        else if (boxControl is Label)
-                                        {
-                                            Label nameLabel = (Label)boxControl;
-                                            content.Add("name", nameLabel.Text);
-                                        }
-                                    }
-                                    contentList.Add(content);
+                                    saveTo(fs);
                                 }
+                                break;
+                            default:
+                                break;
 
-                                JsonSerializer serializer = new JsonSerializer();
-                                serializer.Serialize(file, contentList);
-                                file.Close();
-                                contentList.Clear();
-                            }
-                            break;
-                        default:
-                            break;
-
+                        }
+                        fs.Close();
                     }
                 }
 
-                saveFile(Path.GetFileName(saveFileDiaglog1.FileName));
+                saveFile(saveFileDiaglog1.FileName, Path.GetFileName(saveFileDiaglog1.FileName));
             }
 
         }
 
         private void importMenuItem_Click(object sender, EventArgs e)
         {
-
         }
 
         private void exportItem_Click(object sender, EventArgs e)
@@ -345,6 +386,7 @@ namespace MIDAS
             if (Item != null)
             {
                 ClassGenerate(RightPanel.PointToClient(MousePosition), Item.Text);
+                Changed();
                 Item = null;
             }
         }
@@ -428,6 +470,10 @@ namespace MIDAS
                 temp.Left = e.X + temp.Left - prevPos.X;
                 temp.Top = e.Y + temp.Top - prevPos.Y;
             }
+            if(isResize || isMove)
+            {
+                Changed();
+            }
             DrawLine();
         }
         
@@ -444,6 +490,7 @@ namespace MIDAS
             tempBox.KeyPress += new KeyPressEventHandler(tempBox_OutKey);
 
             Dest.Controls.Add(tempBox);
+            Changed();
             tempBox.Select();
         }
 
@@ -460,6 +507,31 @@ namespace MIDAS
             control.Parent.Text = control.Text;
             if (e.KeyChar == 27)  // esc Key
                 control.Dispose();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (this.sf.isChanged)
+            {
+                if (String.IsNullOrWhiteSpace(this.sf.targetFileName))
+                {
+                    saveAsMenuItem_Click(sender, e);
+                }
+                else
+                {
+                    using (FileStream fs = new FileStream(this.sf.targetFilePath, FileMode.Create))
+                    {
+                        saveTo(fs);
+                        fs.Close();
+                    }
+
+                    saveFile(this.sf.targetFilePath, this.sf.targetFileName);
+                }
+            }
+            else
+            {
+                // do nothing
+            }
         }
 
         private void DrawLine()
