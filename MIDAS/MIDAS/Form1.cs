@@ -196,17 +196,16 @@ namespace MIDAS
             groupbox.Text = Kinds;
             groupbox.Location = point;
             groupbox.BackColor = Color.White;
+            groupbox.Padding = new Padding(5);
             groupbox.Controls.Add(splitContainer2);
             groupbox.MouseDown += new MouseEventHandler(groupbox_MouseDown);
             groupbox.MouseUp += new MouseEventHandler(groupbox_MouseUp);
             groupbox.MouseMove += new MouseEventHandler(groupbox_MouseMove);
-            groupbox.GotFocus += new EventHandler(groupbox_GotFocus);
-            groupbox.LostFocus += new EventHandler(groupbox_LostFocus);
-            groupbox.Padding = new Padding(5);
-            
+
             Label Name = new Label();
             Name.Text = "Number_";
             Name.Dock = DockStyle.Top;
+            Name.MouseDoubleClick += new MouseEventHandler(Lable_MouseDoubleDown);
             groupbox.Controls.Add(Name);
 
             splitContainer2.Dock = DockStyle.Fill;
@@ -229,50 +228,6 @@ namespace MIDAS
 
             RightPanel.Controls.Add(groupbox);
         }
-
-        //void MenuClick(object obj, EventArgs ea)
-        //{
-
-        //    MenuItem mI = (MenuItem)obj;
-        //    String str = mI.Text;
-
-        //    if (str == "Rename")
-        //    {
-        //        InputBox ib = new InputBox(target.Groups[0].Items[0]);
-        //        ib.Show();
-        //    }
-        //    if (str == "Add Attribute")
-        //    {
-        //        ListViewItem newItem = new ListViewItem(target.Groups[0]);
-        //        InputBox ib = new InputBox(newItem);
-        //        ib.Show();
-        //    }
-        //    if (str == "Add Method")
-        //    {
-
-        //    }
-        //    if (str == "Delete")
-        //    {
-        //        target.Dispose();
-        //    }
-        //}
-        //void RightClick(object sender, MouseEventArgs e)
-        //{
-        //    if (e.Button == MouseButtons.Right)
-        //    {
-        //        target = (ListView)sender;
-
-        //        EventHandler handler = new EventHandler(MenuClick);
-        //        MenuItem[] ami = {
-        //            new MenuItem("Rename", handler),
-        //            new MenuItem("Add Attribute", handler),
-        //            new MenuItem("Add Method", handler),
-        //            new MenuItem("-", handler),
-        //            new MenuItem("Delete", handler),
-        //        };
-        //        ContextMenu = new ContextMenu(ami);
-        //    }
-        //}
         
         ListViewItem Item;
 
@@ -281,30 +236,70 @@ namespace MIDAS
             // 클릭 이벤트로 바꿔 줘야 함
             this.Cursor = Cursors.Hand;
             Item = (ListViewItem)e.Item;
+            if (Item.Text == "Line")
+            {
+                isLine = true;
+                Item = null;
+                //Console.WriteLine(Item.Text);
+            }
         }
 
         private void RightPanel_MouseUp(object sender, MouseEventArgs e)
         {
             this.Cursor = Cursors.Default;
-            
+            isLine = false;
+
             if (Item != null)
             {
                 ClassGenerate(RightPanel.PointToClient(MousePosition), Item.Text);
                 Item = null;
             }
         }
-
-
-
+        
         // 이하 GroupBox Move Resize
         bool isResize = false;
         bool isMove = false;
-        Point prevPos;
+        bool isLine = false;
 
+        List<Control> fromControl = new List<Control>();
+        List<Control> toControl = new List<Control>();
+
+        Point prevPos;
+        Control prevControl;
+
+        private void colorChange(Control sender)
+        {
+            if (prevControl == null)
+            {
+                sender.BackColor = Color.Gray;
+                prevControl = sender;
+                return;
+            }
+            else
+            {
+                prevControl.BackColor = Color.White;
+                sender.BackColor = Color.Gray;
+                prevControl = sender;
+            }
+        }
+        
         private void groupbox_MouseDown(object sender, MouseEventArgs e)
         {
             Control temp = (Control)sender;
+            colorChange(temp);
 
+            if (isLine)
+            {
+                if (toControl.Count == fromControl.Count)
+                {
+                    fromControl.Add(temp);
+                }
+                else if (toControl.Count < fromControl.Count)
+                {
+                    toControl.Add(temp);
+                    isLine = false;
+                }
+            }
             if (temp.Height - 5 <= e.Y && temp.Width - 5 <= e.X)
             {
                 Cursor = Cursors.SizeNWSE;
@@ -320,6 +315,7 @@ namespace MIDAS
 
         private void groupbox_MouseUp(object sender, MouseEventArgs e)
         {
+            Control temp = (Control)sender;
             Cursor = Cursors.Default;
             isResize = false;
             isMove = false;
@@ -339,17 +335,9 @@ namespace MIDAS
                 temp.Left = e.X + temp.Left - prevPos.X;
                 temp.Top = e.Y + temp.Top - prevPos.Y;
             }
+            DrawLine();
         }
-
-        private void groupbox_GotFocus(object sender, EventArgs e)
-        {
-
-        }
-        private void groupbox_LostFocus(object sender, EventArgs e)
-        {
-
-        }
-
+        
         // 이하 Lable TextBox
         private void Lable_MouseDoubleDown(object sender, MouseEventArgs e)
         {
@@ -379,6 +367,20 @@ namespace MIDAS
             control.Parent.Text = control.Text;
             if (e.KeyChar == 27)  // esc Key
                 control.Dispose();
+        }
+
+        private void DrawLine()
+        {
+            Graphics graphic = RightPanel.CreateGraphics();
+            graphic.Clear(RightPanel.BackColor);
+            Pen pen = new Pen(Color.Black);
+            Point p1, p2;
+            for(int i=0;i<fromControl.Count && i<toControl.Count; i++)
+            {
+                p1 = new Point(fromControl[i].Left+fromControl[i].Width/2, fromControl[i].Top + fromControl[i].Height / 2);
+                p2 = new Point(toControl[i].Left + toControl[i].Width / 2, toControl[i].Top + toControl[i].Height / 2);
+                graphic.DrawLine(pen, p1, p2);
+            }
         }
     }
 }
