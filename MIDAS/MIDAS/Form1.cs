@@ -160,11 +160,11 @@ namespace MIDAS
             splitContainer2.BorderStyle = BorderStyle.Fixed3D;
             splitContainer2.TabIndex = 0;
             
-            Label Atribute = new Label();
-            Atribute.Text = "Atribute";
-            Atribute.Dock = DockStyle.Fill;
-            Atribute.MouseDoubleClick += new MouseEventHandler(Lable_MouseDoubleDown);
-            splitContainer2.Panel1.Controls.Add(Atribute);
+            Label Attribute = new Label();
+            Attribute.Text = "Attribute";
+            Attribute.Dock = DockStyle.Fill;
+            Attribute.MouseDoubleClick += new MouseEventHandler(Lable_MouseDoubleDown);
+            splitContainer2.Panel1.Controls.Add(Attribute);
 
             Label Method = new Label();
             Method.Text = "Method";
@@ -186,7 +186,7 @@ namespace MIDAS
                 InputBox ib = new InputBox(target.Groups[0].Items[0]);
                 ib.Show();
             }
-            if (str == "Add Atribute")
+            if (str == "Add Attribute")
             {
                 ListViewItem newItem = new ListViewItem(target.Groups[0]);
                 InputBox ib = new InputBox(newItem);
@@ -214,7 +214,7 @@ namespace MIDAS
                 EventHandler handler = new EventHandler(MenuClick);
                 MenuItem[] ami = {
                     new MenuItem("Rename", handler),
-                    new MenuItem("Add Atribute", handler),
+                    new MenuItem("Add Attribute", handler),
                     new MenuItem("Add Method", handler),
                     new MenuItem("-", handler),
                     new MenuItem("Delete", handler),
@@ -253,6 +253,7 @@ namespace MIDAS
             tempBox.Leave += new EventHandler(lostFocus);
 
             Dest.Controls.Add(tempBox);
+            tempBox.Select();
         }
         private void lostFocus(object sender, EventArgs e)
         {
