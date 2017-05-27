@@ -30,7 +30,15 @@ namespace MIDAS
 
         private void openMenuItem_Click(object sender, EventArgs e)
         {
-
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.Filter = "Model Class UML|*.mcu";
+            openFileDialog1.Title = "Select a mcu file";
+            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                System.IO.StreamReader sr = new System.IO.StreamReader(openFileDialog1.FileName);
+                MessageBox.Show(sr.ReadToEnd());
+                sr.Close();
+            }
         }
 
         private void saveMenuItem_Click(object sender, EventArgs e)
@@ -42,26 +50,31 @@ namespace MIDAS
         {
             SaveFileDialog saveFileDiaglog1 = new SaveFileDialog();
             saveFileDiaglog1.Filter = "Model Class UML|*.mcu";
-            saveFileDiaglog1.Title = "Save an mcu file";
-            saveFileDiaglog1.ShowDialog();
+            saveFileDiaglog1.Title = "Save a mcu file";
 
-            if(saveFileDiaglog1.FileName != "")
-            {
-                System.IO.FileStream fs = (System.IO.FileStream)saveFileDiaglog1.OpenFile();
+            if(saveFileDiaglog1.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 
-                switch(saveFileDiaglog1.FilterIndex)
+                if (saveFileDiaglog1.FileName != "")
                 {
-                    case 1:
-                        if(fs.CanWrite)
-                        {
-                            System.IO.StreamWriter file = new System.IO.StreamWriter(fs);
-                            file.WriteLine("Hello World!");
-                            file.Close();
-                        }
-                        break;
+                    System.IO.FileStream fs = (System.IO.FileStream)saveFileDiaglog1.OpenFile();
 
+                    switch (saveFileDiaglog1.FilterIndex)
+                    {
+                        case 1:
+                            if (fs.CanWrite)
+                            {
+                                System.IO.StreamWriter file = new System.IO.StreamWriter(fs);
+                                file.WriteLine("Hello World!");
+                                file.Close();
+                            }
+                            break;
+                        default:
+                            break;
+
+                    }
                 }
             }
+
         }
 
         private void importMenuItem_Click(object sender, EventArgs e)
