@@ -129,6 +129,7 @@ namespace MIDAS
                         string to = Convert.ToString(content["to"]);
                         toControl.Add(controlDic[to]);
                         int kind = Convert.ToInt32(content["kind"]);
+                        lineKinds.Add(kind);
                     }
                 }
                 sr.Close();
@@ -221,7 +222,7 @@ namespace MIDAS
                     Dictionary<string, object> lineContent = new Dictionary<string, object>();
                     lineContent.Add("from", getLabelName(fromControl[i]));
                     lineContent.Add("to", getLabelName(toControl[i]));
-                    lineContent.Add("kind", 1);
+                    lineContent.Add("kind", lineKinds[i]);
                     contentList.Add(lineContent);
                 }
 
@@ -288,20 +289,30 @@ namespace MIDAS
                     using (Bitmap bitmap = new Bitmap(RightPanel.ClientSize.Width, RightPanel.ClientSize.Height))
                     {
                         RightPanel.DrawToBitmap(bitmap, RightPanel.ClientRectangle);
+                        using (var graphics = Graphics.FromImage(bitmap)) {
+                            DrawLine(graphics);
+                        }
+                        foreach (Control control in RightPanel.Controls)
+                        {
+                            if(control is GroupBox)
+                            {
+                                GroupBox groupBox = (GroupBox)control;
+                                Rectangle rac = new Rectangle(groupBox.Bounds.X, groupBox.Bounds.Y, groupBox.Width, groupBox.Height);
+                                groupBox.DrawToBitmap(bitmap, rac);
+                            }
+                        }
+
                         switch (exportImageDialog.FilterIndex)
                         {
                             case 1:
                                 bitmap.Save(fs, System.Drawing.Imaging.ImageFormat.Jpeg);
                                 break;
-
                             case 2:
                                 bitmap.Save(fs, System.Drawing.Imaging.ImageFormat.Bmp);
                                 break;
-
                             case 3:
                                 bitmap.Save(fs, System.Drawing.Imaging.ImageFormat.Gif);
                                 break;
-
                             case 4:
                                 bitmap.Save(fs, System.Drawing.Imaging.ImageFormat.Png);
                                 break;
@@ -515,6 +526,7 @@ namespace MIDAS
                 {
                     ClassGenerate(RightPanel.PointToClient(MousePosition), Item.Text);
                     Changed();
+                    Item.Selected = false;
                     Item = null;
                 }
             }
@@ -665,21 +677,19 @@ namespace MIDAS
             }
         }
 
-        private void DrawLine()
+
+        private Graphics DrawLine(Graphics graphic)
         {
-            Graphics graphic = RightPanel.CreateGraphics();
-            graphic.Clear(RightPanel.BackColor);
-            Pen pen = new Pen(Color.Black,5);
+            Pen pen = new Pen(Color.Black, 5);
             pen.EndCap = LineCap.Flat;
             pen.DashStyle = DashStyle.Solid;
-            //pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
             Point p1, p2;
 
             for (int i = 0; i < fromControl.Count && i < toControl.Count; i++)
             {
-                if(lineKinds[i]==0)
+                if (lineKinds[i] == 0)
                     pen.DashStyle = DashStyle.Solid;
-                else if(lineKinds[i] == 1)
+                else if (lineKinds[i] == 1)
                     pen.DashStyle = DashStyle.Dash;
 
                 p1 = new Point(fromControl[i].Left + fromControl[i].Width / 2, fromControl[i].Top + fromControl[i].Height / 2);
@@ -708,7 +718,7 @@ namespace MIDAS
                         graphic.DrawLine(pen, p1, new Point(p2.X, toControl[i].Top));
                         continue;
                     }
-                    if(fromControl[i].Left > toControl[i].Right)
+                    if (fromControl[i].Left > toControl[i].Right)
                     {
                         graphic.DrawLine(pen, p1, new Point(toControl[i].Right, p2.Y));
                         continue;
@@ -729,6 +739,14 @@ namespace MIDAS
                     }
                 }
             }
+            return graphic;
+        }
+
+        private void DrawLine()
+        {
+            Graphics graphic = RightPanel.CreateGraphics();
+            graphic.Clear(RightPanel.BackColor);
+            DrawLine(graphic);
         }
 
         private void listView1_MouseUp(object sender, MouseEventArgs e)
