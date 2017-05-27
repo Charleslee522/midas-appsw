@@ -63,7 +63,11 @@ namespace MIDAS
             }
             else // DialogResult.Cancel
             {
-                // do nothing
+                if (e is CancelEventArgs)
+                {
+                    CancelEventArgs eventArgs = (CancelEventArgs)e;
+                    eventArgs.Cancel = true;
+                }
             }
         }
 
@@ -262,6 +266,13 @@ namespace MIDAS
                 }
 
                 saveFile(saveFileDiaglog1.FileName, Path.GetFileName(saveFileDiaglog1.FileName));
+            } else
+            {
+                if (e is CancelEventArgs)
+                {
+                    CancelEventArgs eventArgs = (CancelEventArgs)e;
+                    eventArgs.Cancel = true;
+                }
             }
 
         }
@@ -664,7 +675,7 @@ namespace MIDAS
                 {
                     using (FileStream fs = new FileStream(this.sf.targetFilePath, FileMode.Create))
                     {
-                        saveTo(fs);
+                        SaveMessagebox(sender, e);
                         fs.Close();
                     }
 
