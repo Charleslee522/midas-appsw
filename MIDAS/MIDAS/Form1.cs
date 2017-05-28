@@ -575,7 +575,25 @@ namespace MIDAS
             MenuItem mI = (MenuItem)obj;
             String str = mI.Text;
             if (str == "삭제")
+            {
+                int Max = fromControl.Count;
+                if (Max < toControl.Count)
+                    Max = toControl.Count;
+                if (Max < lineKinds.Count)
+                    Max = lineKinds.Count;
+
+                for (int i = 0; i < Max; i++)
+                {
+                    if (fromControl[i] != null && fromControl[i] == target)
+                        fromControl.RemoveAt(i);
+                    if (toControl[i] != null && toControl[i] == target)
+                        toControl.RemoveAt(i);
+                    if (lineKinds[i] != null)
+                        lineKinds.RemoveAt(i);
+                }
                 target.Dispose();
+                DrawLine();
+            }
         }
         private void groupbox_MouseDown(object sender, MouseEventArgs e)
         {
@@ -726,7 +744,7 @@ namespace MIDAS
 
                 p1 = new Point(fromControl[i].Left + fromControl[i].Width / 2, fromControl[i].Top + fromControl[i].Height / 2);
                 p2 = new Point(toControl[i].Left + toControl[i].Width / 2, toControl[i].Top + toControl[i].Height / 2);
-
+                
                 if (fromControl[i] == toControl[i])
                 {
                     pen.EndCap = LineCap.Flat;
