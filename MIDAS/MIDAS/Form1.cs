@@ -576,20 +576,17 @@ namespace MIDAS
             String str = mI.Text;
             if (str == "삭제")
             {
-                int Max = fromControl.Count;
-                if (Max < toControl.Count)
-                    Max = toControl.Count;
-                if (Max < lineKinds.Count)
-                    Max = lineKinds.Count;
-
-                for (int i = 0; i < Max; i++)
+                for (int i = 0; i < toControl.Count; i++)
                 {
-                    if (fromControl[i] != null && fromControl[i] == target)
-                        fromControl.RemoveAt(i);
-                    if (toControl[i] != null && toControl[i] == target)
-                        toControl.RemoveAt(i);
-                    if (lineKinds[i] != null)
-                        lineKinds.RemoveAt(i);
+                    if (fromControl[i] != null && toControl[i] != null)
+                    {
+                        if (fromControl[i] == target || toControl[i] == target)
+                        {
+                            fromControl.RemoveAt(i);
+                            toControl.RemoveAt(i);
+                            lineKinds.RemoveAt(i);
+                        }
+                    }
                 }
                 target.Dispose();
                 DrawLine();
@@ -722,7 +719,7 @@ namespace MIDAS
 
             for (int i = 0; i < fromControl.Count && i < toControl.Count; i++)
             {
-                if (lineKinds[i] == 0)
+                if (lineKinds[i] == 4)
                 {
                     pen.DashStyle = DashStyle.Solid;
                     cusCap.Filled = true;
